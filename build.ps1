@@ -75,6 +75,31 @@ function Convert-Outline($lines, $skipFirstTitle) {
   $html.ToString()
 }
 
+# Research page: one block per project, text on the left and pictures on the right
+function Convert-Projects($lines) {
+  $o = New-Object Text.StringBuilder
+  $title = $null; $txt = ''; $fig = ''
+  $emit = { if ($title) { [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="ptxt">' + $txt + '</div><div class="pfig">' + $fig + '</div></section>') } }
+  foreach ($l in $lines) {
+    $size = 16
+    if ($l -match '^\{S:(\d+)\}(.*)$') { $size = [int]$Matches[1]; $l = $Matches[2] }
+    $l = $l.Trim()
+    if (-not $l) { continue }
+    if ($l -match '^\[?\[IMG:([^|\]]+)\|[^\]]*\]\]?(\(([^)]*)\))?$') {
+      $tag = '<img src="' + (ImgFile $Matches[1]) + '" alt="" loading="lazy">'
+      if ($Matches[3]) { $tag = '<a href="' + (Esc $Matches[3]) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
+      $fig += $tag; continue
+    }
+    if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
+    if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $b = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $b + ' [Read more](' + $Matches[2] + ')' }
+    $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
+    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $fig = ''; continue }
+    $txt += '<p>' + (Inline $l) + '</p>'
+  }
+  & $emit
+  $o.ToString()
+}
+
 # ---------- shared chrome ----------
 $menu = @(
   @{ f = 'index.html'; t = 'Home' }, @{ f = 'research.html'; t = 'Research' }, @{ f = 'publications.html'; t = 'Publications' },
@@ -130,7 +155,7 @@ foreach ($n in $news) {
 }
 $newsHtml += '</ul>'
 if (@($news).Count -gt 4) { $newsHtml += '<p class="morebtn"><button type="button" id="showmore">Show more news</button></p>' }
-$newsJs = '<script>var b=document.getElementById("showmore");if(b){b.addEventListener("click",function(){document.querySelectorAll("li.more").forEach(function(e){e.hidden=false});b.parentNode.hidden=true;});}</script>'
+$newsJs = '<script>var b=document.getElementById("showmore");if(b){var open=false;b.addEventListener("click",function(){open=!open;document.querySelectorAll("li.more").forEach(function(e){e.hidden=!open});b.textContent=open?"Show less news":"Show more news";});}</script>'
 
 # ---------- write pages ----------
 New-Item -ItemType Directory -Force $site | Out-Null
@@ -151,7 +176,8 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
   $lines = Read-Outline $p.src
   if ($p.src -eq 'publications') {
     $body = '<h2>Publications</h2><ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Inline $_) + '</li>' }) -join '') + '</ol>'
-  } else { $body = Convert-Outline $lines $false }
+  } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
+  else { $body = Convert-Outline $lines $false }
   if ($p.src -eq 'research') { $body = '<h2>Research</h2>' + $body }
   if ($p.src -eq 'contact') { $body = '<h2>Contact</h2>' + $body }
   Write-Page $p.file $p.file $p.title $body

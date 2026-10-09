@@ -1,11 +1,11 @@
 :root{--bg:#f3f3f3;--ink:#5d5d5d;--head:#6b6055;--band:#f3f3f3;--menu:#efefef;--on:#c9c5c0;--w:980px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Open Sans","Segoe UI",Arial,sans-serif}
-a{color:#4a4a4a}
+a{color:#3a322a;text-decoration:none;font-weight:600}a:hover{text-decoration:underline}
 .banner{height:330px;background:#000 url(images/c1fe2f_d622cd6be80642b4afdd407f34ca7640.jpg) center/cover no-repeat;display:flex;align-items:center;justify-content:center}
 .banner h1{margin:0;color:#fff;font:300 clamp(34px,6vw,70px)/1.1 "Open Sans",Arial,sans-serif;text-align:center;padding:0 16px}
 .menu{display:flex;justify-content:center;flex-wrap:wrap;background:var(--menu);border-bottom:1px solid #ddd}
-.menu a{display:block;padding:11px 28px;text-decoration:none;color:#333;font-family:Arial,Helvetica,sans-serif;font-size:16px}
+.menu a{display:block;padding:11px 28px;text-decoration:none;font-weight:400;color:#333;font-family:Arial,Helvetica,sans-serif;font-size:16px}
 .menu a:hover,.menu a.on{background:var(--on)}
 .dd{position:relative}.ddm{display:none;position:absolute;left:0;top:100%;min-width:340px;background:var(--menu);box-shadow:0 4px 10px rgba(0,0,0,.15);z-index:5}
 .dd:hover .ddm{display:block}.ddm a{padding:9px 16px;font-size:14px}
@@ -21,12 +21,12 @@ p{margin:.6em 0}.cap{font-size:13px;color:#777;margin:.2em 0}
 .news{list-style:none;margin:0;padding:0;border-top:2px solid #ccc}
 .news li{display:flex;gap:28px;padding:14px 8px}.news li[hidden]{display:none}
 .news .d{flex:0 0 130px;font:600 14px Arial,sans-serif;color:var(--head)}
-.news a{color:inherit}
+.news a{color:inherit;font-weight:600}
 .morebtn{text-align:center;margin:10px 0 18px}
 .morebtn button{background:none;border:0;color:#6b6055;font:14px Arial,sans-serif;text-decoration:underline;cursor:pointer;padding:6px 10px}
 .morebtn button:hover{color:#000}
 .figs{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin:12px 0}
-.figs img{max-width:100%;height:auto;max-height:360px}.figs a img{display:block}
+.figs img{max-width:100%;height:auto;max-height:230px}.figs a img{display:block}
 .pubs{padding-left:1.4em}.pubs li{margin:.7em 0}
 .card{display:flex;gap:22px;align-items:flex-start;margin:18px 0}.card .ph{width:150px;height:auto;flex:0 0 150px}.card h4{margin:0 0 .3em}.card p{margin:.2em 0}
 .alumni{margin:.35em 0}.crumb{margin:0}
@@ -35,3 +35,6 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 .inst{display:flex;gap:10px;align-items:center;justify-content:center;font:14px/1.3 Arial,sans-serif;color:#111}.inst img{width:130px}.inst p{margin:0}
 .funders{display:flex;gap:44px;justify-content:center;align-items:center;margin-top:26px;flex-wrap:wrap}.funders img{height:70px;width:auto}
 @media (max-width:700px){.menu a{padding:9px 14px}.news li{flex-direction:column;gap:2px}.card{flex-direction:column}.banner{height:200px}h2{font-size:26px}}
+
+.proj{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:6px 26px;align-items:start;margin:0 0 8px}.proj h3{grid-column:1/-1;margin:1.4em 0 .2em}.proj .ptxt p{margin:.4em 0}.pfig img{display:block;width:100%;height:auto;margin:0 0 10px}.pfig a{display:block}.pfig:empty{display:none}.proj:has(.pfig:empty){grid-template-columns:1fr}@media (max-width:760px){.proj{grid-template-columns:1fr}.pfig{max-width:320px}}
+.inst a,.funders a,.btn,.menu a,.morebtn button{font-weight:inherit}
