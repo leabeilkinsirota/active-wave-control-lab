@@ -62,6 +62,7 @@ function Convert-Outline($lines, $skipFirstTitle) {
     }
     & $flush
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
+    if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $body_ = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $body_ + ' [Read more]('+ $Matches[2] + ')' }
     $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
     if ($plain.Length -gt 130 -or $size -lt 20) { [void]$html.AppendLine('<p>' + (Inline $l) + '</p>'); continue }
     if ($size -ge 40) { if ($first -and $skipFirstTitle) { $first = $false; continue }; [void]$html.AppendLine('<h2>' + (Inline $l) + '</h2>') }
