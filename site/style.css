@@ -46,3 +46,10 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 .pfig img{width:100%;height:auto;margin:0}
 .pfig a{display:block}
 @media (max-width:760px){.proj{grid-template-columns:1fr}.pfig{max-width:none}}
+/* Collage: pictures fill rows at equal height, each keeping its own proportions */
+.pfig.collage{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:flex-start;align-content:flex-start}
+.pfig.collage>*{flex:var(--ar) 1 calc(var(--ar) * 120px);min-width:0;margin:0}
+.pfig.collage::after{content:"";flex:99 1 0}
+.pfig.collage img{width:100%;height:auto;display:block}
+.pfig.collage>a{display:block}
+.pfig:not(.collage) img{width:100%}

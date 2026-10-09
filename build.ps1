@@ -75,31 +75,44 @@ function Convert-Outline($lines, $skipFirstTitle) {
   $html.ToString()
 }
 
-# Research page: one block per project, text on the left and pictures on the right
+# Aspect ratio of a downloaded image (for the collage layout)
+Add-Type -AssemblyName System.Drawing
+$script:arCache = @{}
+function ImgAR($id) {
+  $f = Join-Path $site (ImgFile $id)
+  if (-not $script:arCache.ContainsKey($f)) {
+    $ar = 1.5
+    if (Test-Path $f) { try { $im = [Drawing.Image]::FromFile($f); $ar = [Math]::Round($im.Width / $im.Height, 3); $im.Dispose() } catch {} }
+    $script:arCache[$f] = $ar
+  }
+  $script:arCache[$f]
+}
+
+# Research page: one block per project, text on the left, pictures on the right (a collage when there are several)
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
-  $title = $null; $txt = ''; $fig = ''
-  $emit = { if ($title) { [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="ptxt">' + $txt + '</div><div class="pfig">' + $fig + '</div></section>') } }
+  $title = $null; $txt = ''; $fig = ''; $nfig = 0
+  $emit = { if ($title) { $cls = if ($nfig -gt 1) { 'pfig collage' } else { 'pfig' }; [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="ptxt">' + $txt + '</div><div class="' + $cls + '">' + $fig + '</div></section>') } }
   foreach ($l in $lines) {
     $size = 16
     if ($l -match '^\{S:(\d+)\}(.*)$') { $size = [int]$Matches[1]; $l = $Matches[2] }
     $l = $l.Trim()
     if (-not $l) { continue }
     if ($l -match '^\[?\[IMG:([^|\]]+)\|[^\]]*\]\]?(\(([^)]*)\))?$') {
-      $tag = '<img src="' + (ImgFile $Matches[1]) + '" alt="" loading="lazy">'
-      if ($Matches[3]) { $tag = '<a href="' + (Esc $Matches[3]) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
-      $fig += $tag; continue
+      $id = $Matches[1]; $lnk = $Matches[3]; $ar = ImgAR $id
+      $tag = '<img src="' + (ImgFile $id) + '" alt="" loading="lazy">'
+      if ($lnk) { $tag = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
+      $fig += ($tag -replace '^<(a|img)', ('<$1 style="--ar:' + $ar + '"')); $nfig++; continue
     }
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
-    if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $b = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $b + ' [Read more](' + $Matches[2] + ')' }
+    if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $bt = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $bt + ' [Read more](' + $Matches[2] + ')' }
     $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
-    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $fig = ''; continue }
+    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $fig = ''; $nfig = 0; continue }
     $txt += '<p>' + (Inline $l) + '</p>'
   }
   & $emit
   $o.ToString()
 }
-
 # ---------- shared chrome ----------
 $menu = @(
   @{ f = 'index.html'; t = 'Home' }, @{ f = 'research.html'; t = 'Research' }, @{ f = 'publications.html'; t = 'Publications' },
