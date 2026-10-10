@@ -3,6 +3,7 @@
 #   photo <file in site/images> | optional link
 #   logo  <file in site/images> | optional link     (shown small)
 #   text  some text, links as [label](url)
+#   rows  2 1   (optional: photos per row, here 2 then 1)
 
 ## METAMAT Conference - July 2026 | https://metamat2026.sciencesconf.org/
 photo c1fe2f_45fd6f34b1de43528a32064834287a18.jpg | https://metamat2026.sciencesconf.org/
@@ -69,6 +70,7 @@ photo c1fe2f_894e8ab70ed44be9a0382412763a597c.jpg | https://congress2023.metamor
 photo c1fe2f_1fffb58402b94ac49b29f3d8a7694931.jpg
 
 ## Group trip to the Sodom Salt Cave - May 2023
+rows 2 1
 photo c1fe2f_dde1fc8287ed4d81980503af470d887c.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 photo c1fe2f_cb1637009ff14849a35a048470d6364b.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 photo c1fe2f_fe9bdb6b68104b549fe79211da75ae48.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
@@ -90,7 +92,6 @@ logo c1fe2f_039030796dd445f1a6aacbb0ae201e91.png | https://congress2022.metamorp
 photo c1fe2f_ea63b7a206ae450283e33ecf9be3258b.jpg
 photo c1fe2f_279b2987753c49cea3eacb46b4d0a033.jpg
 photo c1fe2f_d0e336219547419fbbb90306f05c24dd.jpg
-photo c1fe2f_3d47d5e4c5564c19be3bc2880644060e.jpg
 photo c1fe2f_c5ee8cce228948109992a243906819d4.jpeg
 photo c1fe2f_720f9d42937146d4b853ea93e9587a09.jpeg
 photo c1fe2f_14381f15a11f4aad8dfaffe26a3b7ae1.jpg

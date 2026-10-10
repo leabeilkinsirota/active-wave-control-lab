@@ -91,3 +91,6 @@ main>:first-child{margin-top:.4em}
 .tl.packed .ev{position:absolute;width:calc(50% - 34px);margin:0}
 .tl.packed .ev.l{left:0}.tl.packed .ev.r{right:0}
 .tl.packed .ev.l::before{left:auto;right:-44px}.tl.packed .ev.r::before{left:-44px}
+.ev .side{display:flex;gap:18px;align-items:center}
+.ev .side .efig{flex:0 0 45%}
+.ev .side .logos{flex:1 1 auto;flex-direction:column;align-items:flex-start;gap:14px;margin:0}

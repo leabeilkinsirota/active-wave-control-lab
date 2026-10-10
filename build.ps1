@@ -342,16 +342,17 @@ Write-Page 'team.html' 'team.html' 'Team' $body
 $evs = New-Object Collections.ArrayList; $ev = $null
 foreach ($dl in (Get-Content (Join-Path $root 'data\lab-life.txt') -Encoding UTF8)) {
   $dl = $dl.Trim(); if (-not $dl -or ($dl -match '^#(\s|$)')) { continue }
-  if ($dl -match '^##\s+(.*?)(\s+\|\s+(\S+))?$') { $ev = @{ title = $Matches[1]; link = $Matches[3]; logos = @(); figs = New-Object Collections.ArrayList; text = '' }; [void]$evs.Add($ev); continue }
+  if ($dl -match '^##\s+(.*?)(\s+\|\s+(\S+))?$') { $ev = @{ title = $Matches[1]; link = $Matches[3]; logos = @(); figs = New-Object Collections.ArrayList; text = ''; split = $null }; [void]$evs.Add($ev); continue }
   if ($dl -match '^(photo|logo)\s+(\S+)(\s+\|\s+(\S+))?$') {
     $kind = $Matches[1]; $file = $Matches[2]; $lnk = $Matches[4]
     if ($kind -eq 'logo') {
       $t = '<img src="' + (ImgFile $file) + '" alt="" loading="lazy">'
       if ($lnk) { $t = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $t + '</a>' }
       $ev.logos += $t
-    } else { [void]$ev.figs.Add(@{ tag = (FigTag $file $lnk); ar = (ImgAR $file); s = 1; id = $file }) }
+    } else { [void]$ev.figs.Add(@{ tag = (FigTag $file $lnk); ar = [Math]::Max((ImgAR $file), 0.75); s = 1; id = $file }) }   # very tall phone photos are trimmed to 3:4
     continue
   }
+  if ($dl -match '^rows\s+([\d\s]+)$') { $ev.split = @($Matches[1].Trim() -split '\s+' | ForEach-Object { [int]$_ }); continue }
   if ($dl -match '^text\s+(.*)$') { $ev.text += '<p>' + (Inline $Matches[1]) + '</p>' }
 }
 $tl = '<div class="tl">'
@@ -360,8 +361,16 @@ foreach ($ev in $evs) {
   if ($name -match '^(.*?)\s+-\s+([^-]+)$') { $name = $Matches[1]; $date = $Matches[2] }
   $h = Esc $name; if ($ev.link) { $h = '<a href="' + (Esc $ev.link) + '" target="_blank" rel="noopener">' + $h + '</a>' }
   $tl += '<article class="ev">' + $(if ($date) { '<p class="date">' + (Esc $date) + '</p>' }) + '<h3>' + $h + '</h3>'
-  if ($ev.logos.Count) { $tl += '<div class="logos">' + ($ev.logos -join '') + '</div>' }
-  if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $null @{ h0 = 0.33; maxPer = 4; hcap = 0.6 }) + '</div>' }
+  $logos = if ($ev.logos.Count) { '<div class="logos">' + ($ev.logos -join '') + '</div>' } else { '' }
+  if ($ev.figs.Count -eq 1 -and $logos) {
+    # one photo and logos: side by side
+    $tl += '<div class="side"><div class="efig">' + (Layout-Figs $ev.figs 10 $null @{ hcap = 9 }) + '</div>' + $logos + '</div>'
+  } else {
+    $tl += $logos
+    # a lone photo gets more room than photos in a collage
+    $hc = if ($ev.figs.Count -eq 1) { 0.75 } else { 0.6 }
+    if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $ev.split @{ h0 = 0.33; maxPer = 4; hcap = $hc }) + '</div>' }
+  }
   $tl += $ev.text + '</article>'
 }
 $tl += '</div>'
