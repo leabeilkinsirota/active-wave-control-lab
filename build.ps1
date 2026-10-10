@@ -105,15 +105,16 @@ function ImgAR($id) {
 # every picture in a row has the same height and a full row spans W exactly; a shorter last row
 # keeps the height of the row above (centred). The row split is chosen so that row heights stay
 # close to 0.42 W (smaller rows cost more than larger ones; with several rows none is taller than 0.55 W) and the pictures are not much taller than the text.
-function Layout-Figs($figs, $textH, $split) {
+function Layout-Figs($figs, $textH, $split, $opt = @{}) {
   $n = $figs.Count; if ($n -eq 0) { return '' }
-  $g = 0.016; $h0 = 0.42
+  $g = 0.016; $h0 = 0.42; $maxPer = 3; $hcap = 99   # Lab life passes smaller rows, more per row and a height cap
+  if ($opt.h0) { $h0 = $opt.h0 }; if ($opt.maxPer) { $maxPer = $opt.maxPer }; if ($opt.hcap) { $hcap = $opt.hcap }
   $best = $null; $bestCost = [double]::MaxValue
   for ($mask = 0; $mask -lt [Math]::Pow(2, $n - 1); $mask++) {
     $rows = @(); $cur = @()
     for ($k = 0; $k -lt $n; $k++) { $cur += $k; if ($k -lt $n - 1 -and ($mask -band (1 -shl $k))) { $rows += , $cur; $cur = @() } }
     $rows += , $cur
-    if (@($rows | Where-Object { $_.Count -gt 3 }).Count) { continue }
+    if (@($rows | Where-Object { $_.Count -gt $maxPer }).Count) { continue }
     if ($split -and ((@($rows | ForEach-Object { $_.Count }) -join ',') -ne ($split -join ','))) { continue }   # fixed row split for this project
     $hs = @(); $cost = 0; $prevH = 0; $prevN = 0
     for ($r = 0; $r -lt $rows.Count; $r++) {
@@ -121,7 +122,7 @@ function Layout-Figs($figs, $textH, $split) {
       $rh = (1 - $g * ($rows[$r].Count - 1)) / $sum
       if ($r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }
       $cost += $(if ($rh -lt $h0) { 1 } else { 0.3 }) * [Math]::Pow([Math]::Log($rh / $h0), 2)   # small pictures are worse than large ones
-      if ($rows.Count -gt 1) { $rh = [Math]::Min($rh, 0.55) }   # display cap: with several rows, no row dominates (a lone picture still fills the column)
+      if ($rows.Count -gt 1) { $rh = [Math]::Min($rh, 0.55) }; $rh = [Math]::Min($rh, $hcap)   # display cap: with several rows, no row dominates (a lone picture still fills the column)
       $hs += $rh; $prevH = $rh; $prevN = $rows[$r].Count
     }
     $tot = ($hs | Measure-Object -Sum).Sum + $g * ($rows.Count - 1)
@@ -337,8 +338,58 @@ foreach ($l in $lines) {
 $body = $body.Replace('</div></div>', '</div></div>')
 Write-Page 'team.html' 'team.html' 'Team' $body
 
-# Lab life
-Write-Page 'lab-life.html' 'lab-life.html' 'Lab life' (Convert-Outline (Read-Outline 'copy-of-people') $false)
+# Lab life: zig-zag timeline of events from data/lab-life.txt (newest first)
+$evs = New-Object Collections.ArrayList; $ev = $null
+foreach ($dl in (Get-Content (Join-Path $root 'data\lab-life.txt') -Encoding UTF8)) {
+  $dl = $dl.Trim(); if (-not $dl -or ($dl -match '^#(\s|$)')) { continue }
+  if ($dl -match '^##\s+(.*?)(\s+\|\s+(\S+))?$') { $ev = @{ title = $Matches[1]; link = $Matches[3]; logos = @(); figs = New-Object Collections.ArrayList; text = '' }; [void]$evs.Add($ev); continue }
+  if ($dl -match '^(photo|logo)\s+(\S+)(\s+\|\s+(\S+))?$') {
+    $kind = $Matches[1]; $file = $Matches[2]; $lnk = $Matches[4]
+    if ($kind -eq 'logo') {
+      $t = '<img src="' + (ImgFile $file) + '" alt="" loading="lazy">'
+      if ($lnk) { $t = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $t + '</a>' }
+      $ev.logos += $t
+    } else { [void]$ev.figs.Add(@{ tag = (FigTag $file $lnk); ar = (ImgAR $file); s = 1; id = $file }) }
+    continue
+  }
+  if ($dl -match '^text\s+(.*)$') { $ev.text += '<p>' + (Inline $Matches[1]) + '</p>' }
+}
+$tl = '<div class="tl">'
+foreach ($ev in $evs) {
+  $name = $ev.title; $date = ''
+  if ($name -match '^(.*?)\s+-\s+([^-]+)$') { $name = $Matches[1]; $date = $Matches[2] }
+  $h = Esc $name; if ($ev.link) { $h = '<a href="' + (Esc $ev.link) + '" target="_blank" rel="noopener">' + $h + '</a>' }
+  $tl += '<article class="ev">' + $(if ($date) { '<p class="date">' + (Esc $date) + '</p>' }) + '<h3>' + $h + '</h3>'
+  if ($ev.logos.Count) { $tl += '<div class="logos">' + ($ev.logos -join '') + '</div>' }
+  if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $null @{ h0 = 0.33; maxPer = 4; hcap = 0.6 }) + '</div>' }
+  $tl += $ev.text + '</article>'
+}
+$tl += '</div>'
+# Desktop: pack the cards on both sides of the line, each one a bit lower than the previous (keeps the order in time)
+$tlJs = @'
+<script>
+(function () {
+  var tl = document.querySelector('.tl'); if (!tl) return;
+  var evs = [].slice.call(tl.querySelectorAll('.ev'));
+  function place() {
+    var wide = window.innerWidth > 760;
+    tl.classList.toggle('packed', wide);
+    if (!wide) { evs.forEach(function (e) { e.style.top = ''; e.classList.remove('l', 'r'); }); tl.style.height = ''; return; }
+    var bottom = { l: 0, r: 0 }, prevTop = -1e9, prevSide = 'r';
+    evs.forEach(function (e) {
+      var side = bottom.l < bottom.r ? 'l' : bottom.r < bottom.l ? 'r' : (prevSide === 'l' ? 'r' : 'l');
+      var top = Math.max(bottom[side], prevTop + 60);
+      e.classList.remove('l', 'r'); e.classList.add(side); e.style.top = top + 'px';
+      bottom[side] = top + e.offsetHeight + 26; prevTop = top; prevSide = side;
+    });
+    tl.style.height = Math.max(bottom.l, bottom.r) + 'px';
+  }
+  place(); window.addEventListener('resize', place); window.addEventListener('load', place);
+  [].forEach.call(tl.querySelectorAll('img'), function (i) { i.addEventListener('load', place); });
+})();
+</script>
+'@
+Write-Page 'lab-life.html' 'lab-life.html' 'Lab life' $tl $tlJs
 
 "Built {0} pages into {1}" -f $pages.Count, $site
 

@@ -72,3 +72,22 @@ main>.proj:first-child h3{margin-top:.4em}
 .card .ph[src*="52df875f"]{object-position:68% 30%}   /* Bhargav: face is right of centre in the original */
 /* No page titles: first element of a page starts close to the menu */
 main>:first-child{margin-top:.4em}
+/* Lab life: zig-zag timeline */
+.tl{position:relative;margin:6px 0 30px}
+.tl::before{content:"";position:absolute;top:0;bottom:0;left:9px;width:2px;background:#d3ccc4}
+.ev{position:relative;margin:0 0 22px 34px;padding:12px 14px 14px;background:#fff;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.ev::before{content:"";position:absolute;top:16px;left:-34px;width:20px;height:20px;border-radius:50%;background:var(--head);border:4px solid var(--bg)}
+.ev .date{margin:0;font:600 12px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#9a8f83}
+.ev h3{margin:.1em 0 .55em;font-size:18px;line-height:1.3}
+.ev h3 a{color:inherit}
+.ev .logos{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:0 0 10px}
+.ev .logos img{display:block;height:44px;width:auto;max-width:100%}
+.ev p{margin:.5em 0 0;font-size:14px}
+.efig{container-type:inline-size;display:flex;flex-direction:column;gap:1.6cqw}
+.efig .frow>*{flex:none;display:block;width:calc(var(--ar) * var(--h) * 100cqw);margin:0}
+.efig .frow img{display:block;height:auto;aspect-ratio:var(--ar);object-fit:cover;border-radius:2px}
+.efig .frow>a>img{width:100%}
+.tl.packed::before{left:50%;margin-left:-1px}
+.tl.packed .ev{position:absolute;width:calc(50% - 34px);margin:0}
+.tl.packed .ev.l{left:0}.tl.packed .ev.r{right:0}
+.tl.packed .ev.l::before{left:auto;right:-44px}.tl.packed .ev.r::before{left:-44px}
