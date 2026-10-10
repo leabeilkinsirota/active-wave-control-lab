@@ -98,3 +98,7 @@ main>:first-child{margin-top:.4em}
 .ev::before{top:22px;left:-24px;width:24px;height:2px;border:0;border-radius:0;background:#b9afa4}
 .tl.packed .ev.l::before{left:auto;right:-34px;width:34px}
 .tl.packed .ev.r::before{left:-34px;width:34px}
+/* small dot where each connector meets the central line */
+.ev::after{content:"";position:absolute;top:19px;left:-28px;width:8px;height:8px;border-radius:50%;background:#8a7f73}
+.tl.packed .ev.l::after{left:auto;right:-38px}
+.tl.packed .ev.r::after{left:-38px}
