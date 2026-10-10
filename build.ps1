@@ -307,16 +307,16 @@ Write-Page 'index.html' 'index.html' 'Home' $homeHtml $newsJs
 foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'contact' }) {
   $lines = Read-Outline $p.src
   if ($p.src -eq 'publications') {
-    $body = '<h2>Publications</h2><ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Pub-Item $_) + '</li>' }) -join '') + '</ol>'
+    $body = '<ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Pub-Item $_) + '</li>' }) -join '') + '</ol>'
   } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
   else { $body = Convert-Outline $lines $false }
-  if ($p.src -eq 'contact') { $body = '<h2>Contact</h2>' + $body }
+  # no page titles: the highlighted menu item shows where you are
   Write-Page $p.file $p.file $p.title $body
 }
 
 # Team: sections, with photo cards
 $lines = Read-Outline 'people'
-$body = '<h2>Team</h2>'
+$body = ''
 $card = $null; $inPI = $false
 $flushCard = { if ($script:card) { $script:body += '<div class="card">' + $script:card + '</div></div>'; $script:card = $null } }
 foreach ($l in $lines) {
@@ -338,7 +338,7 @@ $body = $body.Replace('</div></div>', '</div></div>')
 Write-Page 'team.html' 'team.html' 'Team' $body
 
 # Lab life
-Write-Page 'lab-life.html' 'lab-life.html' 'Lab life' ('<h2>Lab life</h2>' + (Convert-Outline (Read-Outline 'copy-of-people') $false))
+Write-Page 'lab-life.html' 'lab-life.html' 'Lab life' (Convert-Outline (Read-Outline 'copy-of-people') $false)
 
 "Built {0} pages into {1}" -f $pages.Count, $site
 
