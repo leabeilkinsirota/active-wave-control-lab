@@ -131,7 +131,7 @@ function Layout-Figs($figs, $textH) {
   $html = ''
   for ($r = 0; $r -lt $best.rows.Count; $r++) {
     $html += '<div class="frow" style="--h:' + [Math]::Round($best.hs[$r], 4) + '">'
-    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(a|img|video)', ('<$1 style="--ar:' + [Math]::Round($figs[$k].ar * $figs[$k].s, 3) + '"')) }
+    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(figure|a|img|video)', ('<$1 style="--ar:' + [Math]::Round($figs[$k].ar * $figs[$k].s, 3) + '"')) }
     $html += '</div>'
   }
   $html
@@ -148,9 +148,12 @@ $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice
 $addTitles = @{ 'We realized active autonomous guiding of topological sound beams' = 'Real-time steering of curved sound beams in a feedback-based topological acoustic metamaterial' }
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
-  $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList
+  $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList; $caps = New-Object Collections.ArrayList
   $emit = {
     if ($title) {
+      # captions belong to the pictures in order; shown under each picture
+      for ($k = 0; $k -lt [Math]::Min($caps.Count, $figs.Count); $k++) { $figs[$k].tag = '<figure>' + $figs[$k].tag + '<figcaption>' + $caps[$k] + '</figcaption></figure>' }
+      if ($caps.Count) { Write-Host ("  captions in '{0}': {1}" -f $title.Substring(0, [Math]::Min(30, $title.Length)), ($caps -join ' | ')) }
       # rough text height in units of the picture column width (text beside the pictures: ~62 chars per 24px line)
       $plainTxt = [regex]::Replace($txt, '<[^>]+>', '')
       $npar = ([regex]::Matches($txt, '<p>')).Count
@@ -177,7 +180,9 @@ function Convert-Projects($lines) {
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
     if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $bt = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $bt + ' [Read more](' + $Matches[2] + ')' }
     $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
-    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $figs = New-Object Collections.ArrayList; continue }
+    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $figs = New-Object Collections.ArrayList; $caps = New-Object Collections.ArrayList; continue }
+    # short lines inside a project are picture captions (e.g. "M<0, K=0."), not text
+    if ($plain.Length -le 60 -and $title) { [void]$caps.Add((Inline ($l -replace '\.$', ''))); continue }
     # Wix split some paragraphs mid-sentence around the pictures: a piece starting in lowercase continues the previous one
     if ($l -cmatch '^[a-z]' -and $txt.EndsWith('</p>')) { $txt = $txt.Substring(0, $txt.Length - 4) + ' ' + (Inline $l) + '</p>' }
     else { $txt += '<p>' + (Inline $l) + '</p>' }

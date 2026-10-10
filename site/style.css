@@ -52,3 +52,6 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 /* Wix videos (autoplay, muted, loop) */
 .frow video{display:block;aspect-ratio:var(--ar);object-fit:contain}
 .figs video{display:block;max-width:100%;height:auto;max-height:230px}
+/* Picture captions */
+.pfig .frow>figure>img,.pfig .frow>figure>video,.pfig .frow>figure>a>img{display:block;width:100%;height:auto}
+.frow figcaption{margin-top:4px;font:13px/1.3 Arial,Helvetica,sans-serif;color:#666;text-align:center}
