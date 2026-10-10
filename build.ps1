@@ -270,7 +270,7 @@ $footer = @"
 </main>
 <footer>
 <hr>
-<div class="inst"><a href="https://en-engineering.tau.ac.il/School-of-Mechanical-Engineering/" target="_blank" rel="noopener" title="School of Mechanical Engineering, Tel Aviv University"><img src="images/c1fe2f_1fbeb8481adb4920a88a78e52d2930b6.png" alt="Tel Aviv University"></a><p>School of Mechanical Engineering<br>The Iby and Aladar Fleischman Faculty of Engineering<br>Tel Aviv University</p></div>
+<div class="inst"><a href="https://en-engineering.tau.ac.il/School-of-Mechanical-Engineering/" target="_blank" rel="noopener" title="School of Mechanical Engineering, Tel Aviv University"><img src="images/c1fe2f_1fbeb8481adb4920a88a78e52d2930b6.png" alt="Tel Aviv University"><p>School of Mechanical Engineering<br>The Iby and Aladar Fleischman Faculty of Engineering<br>Tel Aviv University</p></a></div>
 <div class="funders">
 <a href="https://isf.org.il/#/" target="_blank" rel="noopener"><img src="images/c1fe2f_80198b619a104773a049620936e7af68.jpg" alt="Israel Science Foundation"></a>
 <a href="https://www.pazyfoundation.org.il/" target="_blank" rel="noopener"><img src="images/c1fe2f_e8bc55baf8c24b1fa501f40504e478f6.jpg" alt="Pazy Foundation"></a>
@@ -311,7 +311,7 @@ function Write-Page($file, $active, $title, $body, $extra = '') {
 # Home
 $h = Read-Outline 'home'
 $intro = ($h | Where-Object { $_ -like 'We are interested*' } | Select-Object -First 1) -replace 'Read More\.$', '[Read More.](research.html)'
-$homeHtml = '<section class="intro"><p>' + (Inline $intro) + '</p><img class="hero" src="images/c1fe2f_29825e2f1e2f4abc966e0eb971645ed7.png" alt="Active control of wave propagation: acoustic illusion and mimicking quantum wave phenomena"></section>'
+$homeHtml = '<section class="intro"><p>' + (Inline $intro) + '</p><a href="research.html"><img class="hero" src="images/c1fe2f_29825e2f1e2f4abc966e0eb971645ed7.png" alt="Active control of wave propagation: acoustic illusion and mimicking quantum wave phenomena"></a></section>'
 $homeHtml += '<section class="band join"><h2>JOIN US!</h2><p><a class="btn" href="contact.html">Find out about available positions in our lab</a></p></section>'
 $homeHtml += '<section class="band"><h2>Latest News</h2>' + $newsHtml + '</section>'
 Write-Page 'index.html' 'index.html' 'Home' $homeHtml $newsJs
