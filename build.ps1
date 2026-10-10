@@ -329,7 +329,7 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
     $body = '<ul class="pubs">' + (($recent | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul>'
     if ($earlier.Count) {
       $body += '<p class="morebtn"><button type="button" id="earlierbtn">Show earlier publications</button></p>'
-      $body += '<div id="earlier" hidden><h3>Earlier publications</h3><ul class="pubs">' + (($earlier | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul></div>'
+      $body += '<div id="earlier" hidden><ul class="pubs">' + (($earlier | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul></div>'
     }
   } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
   else { $body = Convert-Outline $lines $false }
