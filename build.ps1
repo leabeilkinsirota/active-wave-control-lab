@@ -321,7 +321,16 @@ Write-Page 'index.html' 'index.html' 'Home' $homeHtml $newsJs
 foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'contact' }) {
   $lines = Read-Outline $p.src
   if ($p.src -eq 'publications') {
-    $body = '<ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Pub-Item $_) + '</li>' }) -join '') + '</ol>'
+    # data/publications.txt: one [citation](link) per line; entries after "## Earlier publications" sit behind a button
+    $pl = Get-Content (Join-Path $root 'data\publications.txt') -Encoding UTF8 | Where-Object { $_.Trim() -and $_ -notmatch '^#\s' }
+    $cut = [Array]::FindIndex([string[]]$pl, [Predicate[string]]{ param($x) $x -match '^##\s' })
+    $recent = if ($cut -ge 0) { $pl[0..($cut - 1)] } else { $pl }
+    $earlier = if ($cut -ge 0 -and $cut -lt $pl.Count - 1) { $pl[($cut + 1)..($pl.Count - 1)] } else { @() }
+    $body = '<ul class="pubs">' + (($recent | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul>'
+    if ($earlier.Count) {
+      $body += '<p class="morebtn"><button type="button" id="earlierbtn">Show earlier publications</button></p>'
+      $body += '<div id="earlier" hidden><h3>Earlier publications</h3><ul class="pubs">' + (($earlier | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul></div>'
+    }
   } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
   else { $body = Convert-Outline $lines $false }
   # no page titles: the highlighted menu item shows where you are
@@ -330,7 +339,8 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
     $body = [regex]::Replace($body, '(?:<p>-\s*(.*?)</p>\s*)+', { param($m) '<ul class="dash">' + ((($m.Value | Select-String '<p>-\s*(.*?)</p>' -AllMatches).Matches | ForEach-Object { '<li>' + $_.Groups[1].Value + '</li>' }) -join '') + '</ul>' })
     $body = '<div class="contact">' + $body + '</div>'
   }
-  Write-Page $p.file $p.file $p.title $body
+  $extra = if ($p.src -eq 'publications') { '<script>var e=document.getElementById("earlierbtn");if(e){e.addEventListener("click",function(){var d=document.getElementById("earlier");d.hidden=!d.hidden;e.textContent=d.hidden?"Show earlier publications":"Hide earlier publications";});}</script>' } else { '' }
+  Write-Page $p.file $p.file $p.title $body $extra
 }
 
 # Team: sections, with photo cards

@@ -148,3 +148,8 @@ main>:first-child{margin-top:.4em}
 /* Team: alumni with a small bullet, wrapped lines indented under the text */
 .alumni{position:relative;padding-left:1.1em}
 .alumni::before{content:"";position:absolute;left:.2em;top:.72em;width:5px;height:5px;border-radius:50%;background:#9a8f83}
+/* Publications: bullets instead of numbers (same small dot as the alumni list) */
+.pubs{list-style:none;padding-left:0}
+.pubs li{position:relative;padding-left:1.1em}
+.pubs li::before{content:"";position:absolute;left:.2em;top:.72em;width:5px;height:5px;border-radius:50%;background:#9a8f83}
+#earlier h3{margin-top:1em}
