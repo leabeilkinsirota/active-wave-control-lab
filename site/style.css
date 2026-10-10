@@ -55,3 +55,6 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 /* Picture captions */
 .pfig .frow>figure>img,.pfig .frow>figure>video,.pfig .frow>figure>a>img{display:block;width:100%;height:auto}
 .frow figcaption{margin-top:4px;font:13px/1.3 Arial,Helvetica,sans-serif;color:#666;text-align:center}
+/* Journal, year - Read more */
+.proj .ptxt p.pref{text-align:left;hyphens:manual;margin-top:.3em;font-size:14px;color:#777}
+main>.proj:first-child h3{margin-top:.4em}

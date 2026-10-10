@@ -168,6 +168,27 @@ $paperTitles = @{
   'Active boundary and interior wave absorbers' = 'Active boundary and interior absorbers for one-dimensional wave propagation: Application to transmission-line metamaterials'
 }
 function Paper-Title($t) { (Esc $t).Replace('{PT}', '&#x1D4AB;&#x1D4AF;') }
+# Journal and year of each project's paper, keyed by a piece of its "Read more" link
+$venues = [ordered]@{
+  'gsp7-v4v1' = 'Physical Review Applied, 2026'; 's44455-025-00012-7' = 'npj Metamaterials, 2026'
+  'zs92-qr17' = 'Physical Review Applied, 2025'; 'zkxs-24kn' = 'Physical Review Applied, 2025'
+  'PhysRevB.111.174304' = 'Physical Review B, 2025'; 'PhysRevB.111.L100301' = 'Physical Review B, 2025'
+  'PhysRevResearch.5.033104' = 'Physical Review Research, 2023'; 'PhysRevB.108.085104' = 'Physical Review B, 2023'
+  'apl/article/123' = 'Applied Physics Letters, 2023'; 'S0888327023004090' = 'Mechanical Systems and Signal Processing, 2023'
+  'ome-13-5-1401' = 'Optical Materials Express, 2023'; 'PhysRevApplied.18.014057' = 'Physical Review Applied, 2022'
+  'PhysRevLett.125.256802' = 'Physical Review Letters, 2020'; 'S0888327020308657' = 'Mechanical Systems and Signal Processing, 2021'
+  'S0888327019300019' = 'Mechanical Systems and Signal Processing, 2019'; 'S0005109820300534' = 'Automatica, 2020'
+}
+# "Read more" at the end of the text -> its own line: "<i>Journal</i>, year - Read more"
+function Venue-Line($txt) {
+  $m = [regex]::Match($txt, '\s*<a href="([^"]+)"[^>]*>Read more\.?</a>\.?')
+  if (-not $m.Success) { return $txt }
+  $url = $m.Groups[1].Value
+  $txt = $txt.Remove($m.Index, $m.Length) -replace '<p></p>', ''
+  $v = ''; foreach ($k in $venues.Keys) { if ($url.Contains($k)) { $v = $venues[$k]; break } }
+  if ($v -match '^(.*), (\d{4})$') { $v = '<i>' + (Esc $Matches[1]) + '</i>, ' + $Matches[2] + ' &ndash; ' } else { Write-Host "  no journal for $url" }
+  $txt + '<p class="pref">' + $v + '<a href="' + $url + '" target="_blank" rel="noopener">Read more</a></p>'
+}
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
   $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList; $caps = New-Object Collections.ArrayList
@@ -179,6 +200,7 @@ function Convert-Projects($lines) {
       # rough text height in units of the picture column width (text beside the pictures: ~62 chars per 24px line)
       $plainTxt = [regex]::Replace($txt, '<[^>]+>', '')
       $npar = ([regex]::Matches($txt, '<p>')).Count
+      $txt = Venue-Line $txt
       $textH = (($plainTxt.Length / 62) * 24 + $npar * 10) / 455
       $figs = @($figs | Where-Object { $_.id -notin $moveLast }) + @($figs | Where-Object { $_.id -in $moveLast })
       [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="pfig">' + (Layout-Figs $figs $textH $(if ($figs.Count) { $rowSplit[$figs[0].id] })) + '</div><div class="ptxt">' + $txt + '</div></section>')
@@ -290,7 +312,6 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
     $body = '<h2>Publications</h2><ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Inline $_) + '</li>' }) -join '') + '</ol>'
   } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
   else { $body = Convert-Outline $lines $false }
-  if ($p.src -eq 'research') { $body = '<h2>Research</h2>' + $body }
   if ($p.src -eq 'contact') { $body = '<h2>Contact</h2>' + $body }
   Write-Page $p.file $p.file $p.title $body
 }
