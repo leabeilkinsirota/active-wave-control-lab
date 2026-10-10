@@ -91,10 +91,10 @@ function ImgAR($id) {
 # Picture rows for one project. All sizes are fractions of the picture column width W:
 # every picture in a row has the same height and a full row spans W exactly; a shorter last row
 # keeps the height of the row above (centred). The row split is chosen so that row heights stay
-# close to 0.45 W, no picture is taller than 0.75 W, and the pictures are not much taller than the text.
+# close to 0.42 W, no picture is taller than 0.6 W, and the pictures are not much taller than the text.
 function Layout-Figs($figs, $textH) {
   $n = $figs.Count; if ($n -eq 0) { return '' }
-  $g = 0.016; $h0 = 0.45; $hmax = 0.75
+  $g = 0.016; $h0 = 0.42; $hmax = 0.6
   $best = $null; $bestCost = [double]::MaxValue
   for ($mask = 0; $mask -lt [Math]::Pow(2, $n - 1); $mask++) {
     $rows = @(); $cur = @()
@@ -123,17 +123,17 @@ function Layout-Figs($figs, $textH) {
   $html
 }
 
-# Research page: one block per project, text on the left, pictures on the right
+# Research page: one block per project, pictures floated right with the text wrapping around them
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
   $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList
   $emit = {
     if ($title) {
-      # rough text height in units of the picture column width (text column is 1.5x wider, ~75 chars per 24px line)
+      # rough text height in units of the picture column width (text beside the pictures: ~62 chars per 24px line)
       $plainTxt = [regex]::Replace($txt, '<[^>]+>', '')
       $npar = ([regex]::Matches($txt, '<p>')).Count
-      $textH = (($plainTxt.Length / 75) * 24 + $npar * 10) / 364
-      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="ptxt">' + $txt + '</div><div class="pfig">' + (Layout-Figs $figs $textH) + '</div></section>')
+      $textH = (($plainTxt.Length / 62) * 24 + $npar * 10) / 455
+      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="pfig">' + (Layout-Figs $figs $textH) + '</div><div class="ptxt">' + $txt + '</div></section>')
     }
   }
   foreach ($l in $lines) {

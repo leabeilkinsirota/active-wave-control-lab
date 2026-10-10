@@ -36,15 +36,16 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 .funders{display:flex;gap:44px;justify-content:center;align-items:center;margin-top:26px;flex-wrap:wrap}.funders img{height:70px;width:auto}
 @media (max-width:700px){.menu a{padding:9px 14px}.news li{flex-direction:column;gap:2px}.card{flex-direction:column}.banner{height:200px}h2{font-size:26px}}
 
-.proj{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:6px 26px;align-items:start;margin:0 0 8px}.proj h3{grid-column:1/-1;margin:1.4em 0 .2em}.proj .ptxt p{margin:.4em 0}.pfig img{display:block;width:100%;height:auto;margin:0 0 10px}.pfig a{display:block}.pfig:empty{display:none}.proj:has(.pfig:empty){grid-template-columns:1fr}@media (max-width:760px){.proj{grid-template-columns:1fr}.pfig{max-width:320px}}
 .inst a,.funders a,.btn,.menu a,.morebtn button{font-weight:inherit}
 
-/* Research: 60/40 split, justified text, pictures spread from the top to the bottom of the text */
-.proj{grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:6px 30px;align-items:stretch}
-.proj .ptxt p{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
-@media (max-width:760px){.proj{grid-template-columns:1fr}.pfig{max-width:none}}
+
+/* Research: one block per project; pictures float right on half the width, justified text wraps beside and below them */
+.proj{display:flow-root;margin:0 0 8px}.proj h3{margin:1.4em 0 .4em}
+.proj .ptxt p{margin:0 0 .6em;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.pfig{float:right;width:calc(50% - 15px);margin:.35em 0 12px 30px}
+@media (max-width:760px){.pfig{float:none;width:100%;margin:0 0 12px}}
 /* Picture rows (laid out by build.ps1): --h = row height, --ar = picture aspect ratio, both relative to the column width */
-.pfig{container-type:inline-size;display:flex;flex-direction:column;justify-content:flex-start;gap:1.6cqw;padding-top:.4em}
+.pfig{container-type:inline-size;display:flex;flex-direction:column;gap:1.6cqw}
 .frow{display:flex;justify-content:center;gap:1.6cqw}
 .pfig .frow>*{flex:none;display:block;width:calc(var(--ar) * var(--h) * 100cqw);height:auto;margin:0}
-.pfig .frow>a>img{display:block;width:100%;height:auto;margin:0}
+.pfig .frow>a>img{display:block;width:100%;height:auto;margin:0}.pfig:empty{display:none}
