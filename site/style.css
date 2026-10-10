@@ -111,7 +111,10 @@ main>:first-child{margin-top:.4em}
 /* ---------- Phones (up to 700px wide) ---------- */
 @media (max-width:700px){
   /* justified text leaves big gaps on a narrow screen */
-  .intro p,.proj .ptxt p,.pubs li{text-align:left;hyphens:manual;-webkit-hyphens:manual}
+  .intro p,.pubs li{text-align:left;hyphens:manual;-webkit-hyphens:manual}
+  /* Research text stays justified; hyphenation keeps the word gaps small */
+  .proj .ptxt p{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+  .proj .ptxt p.pref{text-align:left}
   /* menu: two tidy rows of three */
   .menu{display:grid;grid-template-columns:repeat(3,1fr)}
   .menu a{padding:10px 4px;text-align:center;font-size:15px}
