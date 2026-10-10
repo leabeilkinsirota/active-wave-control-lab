@@ -100,7 +100,7 @@ function ImgAR($id) {
 # every picture in a row has the same height and a full row spans W exactly; a shorter last row
 # keeps the height of the row above (centred). The row split is chosen so that row heights stay
 # close to 0.42 W (smaller rows cost more than larger ones; with several rows none is taller than 0.55 W) and the pictures are not much taller than the text.
-function Layout-Figs($figs, $textH) {
+function Layout-Figs($figs, $textH, $split) {
   $n = $figs.Count; if ($n -eq 0) { return '' }
   $g = 0.016; $h0 = 0.42
   $best = $null; $bestCost = [double]::MaxValue
@@ -109,6 +109,7 @@ function Layout-Figs($figs, $textH) {
     for ($k = 0; $k -lt $n; $k++) { $cur += $k; if ($k -lt $n - 1 -and ($mask -band (1 -shl $k))) { $rows += , $cur; $cur = @() } }
     $rows += , $cur
     if (@($rows | Where-Object { $_.Count -gt 3 }).Count) { continue }
+    if ($split -and ((@($rows | ForEach-Object { $_.Count }) -join ',') -ne ($split -join ','))) { continue }   # fixed row split for this project
     $hs = @(); $cost = 0; $prevH = 0; $prevN = 0
     for ($r = 0; $r -lt $rows.Count; $r++) {
       $sum = 0; foreach ($k in $rows[$r]) { $sum += $figs[$k].ar }
@@ -141,7 +142,10 @@ function Layout-Figs($figs, $textH) {
 # Pictures left out of the Research page
 $skipImgs = @('c1fe2f_affb91702dd140d6b065eaaa55480178')   # gravitational lensing: funnel potential
 # Pictures shown smaller than their row height (unit-cell sketches etc.); the row is laid out at full size, then shrinks and is centred
-$imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aaac52f40499d1f95780868e4ad' = 0.85 }   # Haldane unit cell, 3 controlled cells
+$imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aaac52f40499d1f95780868e4ad' = 0.85   # Haldane unit cell, 3 controlled cells
+              'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = 1.15 }   # quiet channel system sketch
+# Fixed row split for a project (key = its first picture): number of pictures per row
+$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet channel: system on top, 3 snapshots below
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Project titles missing on the Wix page: title inserted before the paragraph starting with the key
@@ -159,7 +163,7 @@ function Convert-Projects($lines) {
       $npar = ([regex]::Matches($txt, '<p>')).Count
       $textH = (($plainTxt.Length / 62) * 24 + $npar * 10) / 455
       $figs = @($figs | Where-Object { $_.id -notin $moveLast }) + @($figs | Where-Object { $_.id -in $moveLast })
-      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="pfig">' + (Layout-Figs $figs $textH) + '</div><div class="ptxt">' + $txt + '</div></section>')
+      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="pfig">' + (Layout-Figs $figs $textH $(if ($figs.Count) { $rowSplit[$figs[0].id] })) + '</div><div class="ptxt">' + $txt + '</div></section>')
     }
   }
   foreach ($l in $lines) {
