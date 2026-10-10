@@ -114,6 +114,12 @@ function Layout-Figs($figs, $textH) {
     if ($tot -gt 1.3 * $textH) { $cost += [Math]::Pow([Math]::Log($tot / (1.3 * $textH)), 2) }   # text wraps below, so mild
     if ($cost -lt $bestCost) { $bestCost = $cost; $best = @{ rows = $rows; hs = $hs } }
   }
+  # rows of several pictures share one height (the smallest), so no group of pictures looks oversized next to another
+  $multi = @(0..($best.rows.Count - 1) | Where-Object { $best.rows[$_].Count -gt 1 })
+  if ($multi.Count -gt 1) {
+    $hmin = ($multi | ForEach-Object { $best.hs[$_] } | Measure-Object -Minimum).Minimum
+    foreach ($r in $multi) { $best.hs[$r] = $hmin }
+  }
   $html = ''
   for ($r = 0; $r -lt $best.rows.Count; $r++) {
     $html += '<div class="frow" style="--h:' + [Math]::Round($best.hs[$r], 4) + '">'
