@@ -145,7 +145,9 @@ $skipImgs = @('c1fe2f_affb91702dd140d6b065eaaa55480178')   # gravitational lensi
 $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aaac52f40499d1f95780868e4ad' = 0.85   # Haldane unit cell, 3 controlled cells
               'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = 1.15   # quiet channel system sketch
               'c1fe2f_96a0a614fbb44338a2a4729af3fbfaff' = 0.8   # temporal negative refraction
-              'c1fe2f_34fcb9c11d0c4e63b975339c45b3a837' = 0.8 }   # harnessing nonlinearity
+              'c1fe2f_34fcb9c11d0c4e63b975339c45b3a837' = 0.8   # harnessing nonlinearity
+              'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
+              'c1fe2f_7a6c9c38dd0646baa75666a175bfb216' = 0.8; 'c1fe2f_9729ad1c463e49a2809164e156faf488' = 0.8; 'c1fe2f_23857bc08e3a4b8ea54d55a3eb6ab771' = 0.8 }   # absorbers plots
 # Fixed row split for a project (key = its first picture): number of pictures per row
 $rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet channel: system on top, 3 snapshots below
 # Pictures moved to the end of their project (own row below the others)
