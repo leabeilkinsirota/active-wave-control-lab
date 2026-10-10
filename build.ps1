@@ -151,6 +151,20 @@ $rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet c
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Project titles missing on the Wix page: title inserted before the paragraph starting with the key
 $addTitles = @{ 'We realized active autonomous guiding of topological sound beams' = 'Real-time steering of curved sound beams in a feedback-based topological acoustic metamaterial' }
+# Project titles as in the papers (from Crossref); {PT} = calligraphic PT
+$paperTitles = @{
+  'Wave Acceleration and NH Jump in Nonreciprocal Lattices' = 'Solution of wave acceleration and non-Hermitian jump in nonreciprocal lattices'
+  'Fast wave transport in two-dimensional PT-symmetric lattices' = 'Fast wave transport in two-dimensional {PT}-symmetric lattices'
+  'Harnessing Nonlinearity to Tame Wave Dynamics in Nonreciprocal Active Systems' = 'Harnessing nonlinearity to tame wave dynamics in nonreciprocal active systems'
+  'Controlled wave acceleration in non-Hermitian lattices' = 'Controlled wave acceleration in {PT}-symmetric and inhomogeneous non-Hermitian lattices'
+  'Emerging exceptional point with breakdown of the skin effect in non-Hermitian quantum systems' = 'Emerging exceptional point with breakdown of the skin effect in non-Hermitian systems'
+  'Real-time-controlled artificial quiet channel for acoustic cloaking' = 'Real-time-controlled artificial quiet channel for acoustic cloaking under varying detection conditions'
+  'Acoustic analogue of quantum tunneling' = 'Klein-Like Tunneling of Sound via Negative Index Metamaterials'
+  'Feedback-based topological mechanical metamaterials' = 'Non-Newtonian Topological Mechanical Metamaterials Using Feedback Control'
+  'Feedback-based reconfigurable elastic metamaterials' = 'Tunable and reconfigurable mechanical transmission-line metamaterials via direct active feedback control'
+  'Active boundary and interior wave absorbers' = 'Active boundary and interior absorbers for one-dimensional wave propagation: Application to transmission-line metamaterials'
+}
+function Paper-Title($t) { (Esc $t).Replace('{PT}', '&#x1D4AB;&#x1D4AF;') }
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
   $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList; $caps = New-Object Collections.ArrayList
@@ -185,7 +199,7 @@ function Convert-Projects($lines) {
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
     if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $bt = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $bt + ' [Read more](' + $Matches[2] + ')' }
     $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
-    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $figs = New-Object Collections.ArrayList; $caps = New-Object Collections.ArrayList; continue }
+    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = if ($paperTitles.ContainsKey($plain)) { Paper-Title $paperTitles[$plain] } else { Inline $l }; $txt = ''; $figs = New-Object Collections.ArrayList; $caps = New-Object Collections.ArrayList; continue }
     # short lines inside a project are picture captions (e.g. "M<0, K=0."), not text
     if ($plain.Length -le 60 -and $title) { [void]$caps.Add((Inline ($l -replace '\.$', ''))); continue }
     # Wix split some paragraphs mid-sentence around the pictures: a piece starting in lowercase continues the previous one
