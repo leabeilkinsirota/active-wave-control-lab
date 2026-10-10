@@ -121,7 +121,7 @@ function Layout-Figs($figs, $textH, $split, $opt = @{}) {
     for ($r = 0; $r -lt $rows.Count; $r++) {
       $sum = 0; foreach ($k in $rows[$r]) { $sum += $figs[$k].ar }
       $rh = (1 - $g * ($rows[$r].Count - 1)) / $sum
-      if ($r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }
+      if (-not $split -and $r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }   # rows set by hand are left as given
       $cost += $(if ($rh -lt $h0) { 1 } else { 0.3 }) * [Math]::Pow([Math]::Log($rh / $h0), 2)   # small pictures are worse than large ones
       if ($rh -lt $hmin) { $cost += 10 * [Math]::Pow([Math]::Log($rh / $hmin), 2) }   # optional floor on row height
       if ($wmin) { foreach ($k in $rows[$r]) { $pw = $figs[$k].ar * [Math]::Min($rh, $mcap); if ($pw -lt $wmin) { $cost += 40 * [Math]::Pow([Math]::Log($pw / $wmin), 2) } } }   # optional floor on photo width
