@@ -91,7 +91,7 @@ function ImgAR($id) {
 # Picture rows for one project. All sizes are fractions of the picture column width W:
 # every picture in a row has the same height and a full row spans W exactly; a shorter last row
 # keeps the height of the row above (centred). The row split is chosen so that row heights stay
-# close to 0.42 W (smaller rows cost more than larger ones) and the pictures are not much taller than the text.
+# close to 0.42 W (smaller rows cost more than larger ones; with several rows none is taller than 0.55 W) and the pictures are not much taller than the text.
 function Layout-Figs($figs, $textH) {
   $n = $figs.Count; if ($n -eq 0) { return '' }
   $g = 0.016; $h0 = 0.42
@@ -107,6 +107,7 @@ function Layout-Figs($figs, $textH) {
       $rh = (1 - $g * ($rows[$r].Count - 1)) / $sum
       if ($r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }
       $cost += $(if ($rh -lt $h0) { 1 } else { 0.3 }) * [Math]::Pow([Math]::Log($rh / $h0), 2)   # small pictures are worse than large ones
+      if ($rows.Count -gt 1) { $rh = [Math]::Min($rh, 0.55) }   # display cap: with several rows, no row dominates (a lone picture still fills the column)
       $hs += $rh; $prevH = $rh; $prevN = $rows[$r].Count
     }
     $tot = ($hs | Measure-Object -Sum).Sum + $g * ($rows.Count - 1)
