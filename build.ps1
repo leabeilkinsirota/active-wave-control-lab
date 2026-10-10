@@ -132,6 +132,8 @@ function Layout-Figs($figs, $textH) {
 # Research page: one block per project, pictures floated right with the text wrapping around them
 # Pictures left out of the Research page
 $skipImgs = @('c1fe2f_affb91702dd140d6b065eaaa55480178')   # gravitational lensing: funnel potential
+# Project titles missing on the Wix page: title inserted before the paragraph starting with the key
+$addTitles = @{ 'We realized active autonomous guiding of topological sound beams' = 'Real-time steering of curved sound beams in a feedback-based topological acoustic metamaterial' }
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
   $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList
@@ -157,6 +159,7 @@ function Convert-Projects($lines) {
       if ($lnk) { $tag = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
       [void]$figs.Add(@{ tag = $tag; ar = $ar }); continue
     }
+    foreach ($k in $addTitles.Keys) { if ($l.StartsWith($k)) { & $emit; $title = Esc $addTitles[$k]; $txt = ''; $figs = New-Object Collections.ArrayList } }
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
     if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $bt = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $bt + ' [Read more](' + $Matches[2] + ')' }
     $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
