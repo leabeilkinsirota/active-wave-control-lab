@@ -33,6 +33,17 @@ function Inline($s) {
   $o
 }
 
+# Publication entry "[Authors (year). Title. Journal, vol...](url)": one link, only the journal (or proceedings) name in bold
+function Pub-Item($s) {
+  if ($s -notmatch '^\[(.*)\]\(([^)]*)\)$') { return (Inline $s) }
+  $label = $Matches[1]; $u = $Matches[2]
+  if ($label -match '^(?<pre>.*?\(\d{4}[^)]*\)\.\s+.*?\.\s+In\s+)(?<j>.+?)(?<post>\s+\((?:Vol\.|pp\.).*)$' -or
+      $label -match '^(?<pre>.*?\(\d{4}[^)]*\)\.\s+.*?\.\s+)(?<j>[^,]+?)(?<post>,\s*\d.*)$') {
+    $html = (Esc $Matches['pre']) + '<b>' + (Esc $Matches['j']) + '</b>' + (Esc $Matches['post'])
+  } else { Write-Host "  publication without journal: $label"; $html = Esc $label }
+  '<a href="' + (Esc $u) + '" target="_blank" rel="noopener">' + $html + '</a>'
+}
+
 $pages = @(
   @{ file = 'index.html';       title = 'Home';        src = 'home' },
   @{ file = 'research.html';    title = 'Research';    src = 'research' },
@@ -40,12 +51,6 @@ $pages = @(
   @{ file = 'team.html';        title = 'Team';        src = 'people' },
   @{ file = 'lab-life.html';    title = 'Lab life';    src = 'copy-of-people' },
   @{ file = 'contact.html';     title = 'Contact';     src = 'contact' }
-)
-$topics = @(
-  @{ file = 'topic-1.html'; src = 'topic-1' },
-  @{ file = 'topic-2.html'; src = 'copy-of-topic-1' },
-  @{ file = 'topic-3.html'; src = 'copy-of-topic-2' },
-  @{ file = 'topic-4.html'; src = 'copy-of-topic-3' }
 )
 
 function Read-Outline($src) {
@@ -240,11 +245,6 @@ $menu = @(
   @{ f = 'index.html'; t = 'Home' }, @{ f = 'research.html'; t = 'Research' }, @{ f = 'publications.html'; t = 'Publications' },
   @{ f = 'team.html'; t = 'Team' }, @{ f = 'lab-life.html'; t = 'Lab life' }, @{ f = 'contact.html'; t = 'Contact' }
 )
-$topicTitles = @()
-foreach ($t in $topics) {
-  $first = (Read-Outline $t.src | Select-Object -First 1) -replace '^\{S:\d+\}', ''
-  $topicTitles += @{ f = $t.file; t = $first }
-}
 function Chrome-Top($active, $pageTitle) {
   $nav = ''
   foreach ($m in $menu) {
@@ -307,7 +307,7 @@ Write-Page 'index.html' 'index.html' 'Home' $homeHtml $newsJs
 foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'contact' }) {
   $lines = Read-Outline $p.src
   if ($p.src -eq 'publications') {
-    $body = '<h2>Publications</h2><ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Inline $_) + '</li>' }) -join '') + '</ol>'
+    $body = '<h2>Publications</h2><ol class="pubs">' + (($lines | ForEach-Object { $_ -replace '^\{S:\d+\}','' } | Where-Object { $_ -match '^\[' } | ForEach-Object { '<li>' + (Pub-Item $_) + '</li>' }) -join '') + '</ol>'
   } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
   else { $body = Convert-Outline $lines $false }
   if ($p.src -eq 'contact') { $body = '<h2>Contact</h2>' + $body }
@@ -335,17 +335,10 @@ Write-Page 'team.html' 'team.html' 'Team' $body
 # Lab life
 Write-Page 'lab-life.html' 'lab-life.html' 'Lab life' ('<h2>Lab life</h2>' + (Convert-Outline (Read-Outline 'copy-of-people') $false))
 
-# Topics
-foreach ($t in $topics) {
-  $lines = @(Read-Outline $t.src)
-  $title = ($lines[0] -replace '^\{S:\d+\}', '')
-  $b = '<p class="crumb"><a href="research.html">&larr; Research</a></p>' + (Convert-Outline $lines $false)
-  Write-Page $t.file 'research.html' $title $b
-}
-"Built {0} pages into {1}" -f ($pages.Count + $topics.Count), $site
+"Built {0} pages into {1}" -f $pages.Count, $site
 
-# Redirect stubs so old Wix URLs keep working
-$redirects = @{ 'people.html' = 'team.html'; 'copy-of-people.html' = 'lab-life.html'; 'copy-of-topic-1.html' = 'topic-2.html'; 'copy-of-topic-2.html' = 'topic-3.html'; 'copy-of-topic-3.html' = 'topic-4.html' }
+# Redirect stubs so old Wix URLs keep working (the old topic pages now lead to Research)
+$redirects = @{ 'people.html' = 'team.html'; 'copy-of-people.html' = 'lab-life.html'; 'topic-1.html' = 'research.html'; 'copy-of-topic-1.html' = 'research.html'; 'copy-of-topic-2.html' = 'research.html'; 'copy-of-topic-3.html' = 'research.html' }
 foreach ($k in $redirects.Keys) {
   $to = $redirects[$k]
   [IO.File]::WriteAllText((Join-Path $site $k), "<!doctype html><meta charset=""utf-8""><title>Redirecting</title><link rel=""canonical"" href=""$to""><meta http-equiv=""refresh"" content=""0; url=$to""><p>Moved to <a href=""$to"">$to</a>.</p>", $enc)

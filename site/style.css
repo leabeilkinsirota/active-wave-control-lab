@@ -58,3 +58,6 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 /* Journal, year - Read more */
 .proj .ptxt p.pref{text-align:left;hyphens:manual;margin-top:.3em;font-size:14px;color:#777}
 main>.proj:first-child h3{margin-top:.4em}
+/* Publications: justified, only the journal in bold */
+.pubs li{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.pubs a{font-weight:400}.pubs a b{font-weight:700}
