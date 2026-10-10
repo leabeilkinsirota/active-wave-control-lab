@@ -88,11 +88,54 @@ function ImgAR($id) {
   $script:arCache[$f]
 }
 
-# Research page: one block per project, text on the left, pictures on the right (a collage when there are several)
+# Picture rows for one project. All sizes are fractions of the picture column width W:
+# every picture in a row has the same height and a full row spans W exactly; a shorter last row
+# keeps the height of the row above (centred). The row split is chosen so that row heights stay
+# close to 0.45 W, no picture is taller than 0.75 W, and the pictures are not much taller than the text.
+function Layout-Figs($figs, $textH) {
+  $n = $figs.Count; if ($n -eq 0) { return '' }
+  $g = 0.016; $h0 = 0.45; $hmax = 0.75
+  $best = $null; $bestCost = [double]::MaxValue
+  for ($mask = 0; $mask -lt [Math]::Pow(2, $n - 1); $mask++) {
+    $rows = @(); $cur = @()
+    for ($k = 0; $k -lt $n; $k++) { $cur += $k; if ($k -lt $n - 1 -and ($mask -band (1 -shl $k))) { $rows += , $cur; $cur = @() } }
+    $rows += , $cur
+    if (@($rows | Where-Object { $_.Count -gt 3 }).Count) { continue }
+    $hs = @(); $cost = 0; $prevH = 0; $prevN = 0
+    for ($r = 0; $r -lt $rows.Count; $r++) {
+      $sum = 0; foreach ($k in $rows[$r]) { $sum += $figs[$k].ar }
+      $rh = (1 - $g * ($rows[$r].Count - 1)) / $sum
+      if ($r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }
+      $rh = [Math]::Min($rh, $hmax)
+      $cost += [Math]::Pow([Math]::Log($rh / $h0), 2)
+      $hs += $rh; $prevH = $rh; $prevN = $rows[$r].Count
+    }
+    $tot = ($hs | Measure-Object -Sum).Sum + $g * ($rows.Count - 1)
+    if ($tot -gt $textH) { $cost += 2 * [Math]::Pow([Math]::Log($tot / $textH), 2) }
+    if ($cost -lt $bestCost) { $bestCost = $cost; $best = @{ rows = $rows; hs = $hs } }
+  }
+  $html = ''
+  for ($r = 0; $r -lt $best.rows.Count; $r++) {
+    $html += '<div class="frow" style="--h:' + [Math]::Round($best.hs[$r], 4) + '">'
+    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(a|img)', ('<$1 style="--ar:' + $figs[$k].ar + '"')) }
+    $html += '</div>'
+  }
+  $html
+}
+
+# Research page: one block per project, text on the left, pictures on the right
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
-  $title = $null; $txt = ''; $fig = ''; $nfig = 0
-  $emit = { if ($title) { $cls = if ($nfig -gt 1) { 'pfig collage' } else { 'pfig' }; [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="ptxt">' + $txt + '</div><div class="' + $cls + '">' + $fig + '</div></section>') } }
+  $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList
+  $emit = {
+    if ($title) {
+      # rough text height in units of the picture column width (text column is 1.5x wider, ~75 chars per 24px line)
+      $plainTxt = [regex]::Replace($txt, '<[^>]+>', '')
+      $npar = ([regex]::Matches($txt, '<p>')).Count
+      $textH = (($plainTxt.Length / 75) * 24 + $npar * 10) / 364
+      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="ptxt">' + $txt + '</div><div class="pfig">' + (Layout-Figs $figs $textH) + '</div></section>')
+    }
+  }
   foreach ($l in $lines) {
     $size = 16
     if ($l -match '^\{S:(\d+)\}(.*)$') { $size = [int]$Matches[1]; $l = $Matches[2] }
@@ -102,12 +145,12 @@ function Convert-Projects($lines) {
       $id = $Matches[1]; $lnk = $Matches[3]; $ar = ImgAR $id
       $tag = '<img src="' + (ImgFile $id) + '" alt="" loading="lazy">'
       if ($lnk) { $tag = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
-      $fig += ($tag -replace '^<(a|img)', ('<$1 style="--ar:' + $ar + '"')); $nfig++; continue
+      [void]$figs.Add(@{ tag = $tag; ar = $ar }); continue
     }
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
     if ($l -match '^\[(.{130,}?)\]\(([^)]*)\)$') { $bt = $Matches[1] -replace '\s*Read more\.?\s*$', ''; $l = $bt + ' [Read more](' + $Matches[2] + ')' }
     $plain = [regex]::Replace($l, '\[([^\]]*)\]\([^)]*\)', '$1')
-    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $fig = ''; $nfig = 0; continue }
+    if ($size -ge 30 -and $plain.Length -le 130) { & $emit; $title = Inline $l; $txt = ''; $figs = New-Object Collections.ArrayList; continue }
     $txt += '<p>' + (Inline $l) + '</p>'
   }
   & $emit
