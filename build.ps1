@@ -349,13 +349,17 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
 # Team: sections, with photo cards
 $lines = Read-Outline 'people'
 $body = ''
-$card = $null; $inPI = $false
+$card = $null; $inPI = $false; $inAlumni = $false
 $flushCard = { if ($script:card) { $script:body += '<div class="card">' + $script:card + '</div></div>'; $script:card = $null } }
 foreach ($l in $lines) {
   $size = 16; if ($l -match '^\{S:(\d+)\}(.*)$') { $size = [int]$Matches[1]; $l = $Matches[2] }
   $l = $l.Trim(); if (-not $l -or $l -eq 'Sayan') { continue }
-  if ($l -match '^(Principal Investigator|Research Scientists|Postdoctoral Fellows|Students|Alumni)') { & $flushCard; $body += '<h3>' + (Inline $l) + '</h3>'; $inPI = $l -like 'Principal Investigator*'; continue }
+  if ($l -match '^(Principal Investigator|Research Scientists|Postdoctoral Fellows|Students|Alumni)') { & $flushCard; $body += '<h3>' + (Inline $l) + '</h3>'; $inPI = $l -like 'Principal Investigator*'; $inAlumni = $l -like 'Alumni*'
+    # alumni come from data/alumni.txt (one per line)
+    if ($inAlumni) { $body += ((Get-Content (Join-Path $root 'data\alumni.txt') -Encoding UTF8 | Where-Object { $_.Trim() -and $_ -notmatch '^#' } | ForEach-Object { '<p class="alumni">' + (Inline $_.Trim()) + '</p>' }) -join '') }
+    continue }
   # PI card: photo from the old page, text from data/team-pi.html (name, contact line, short CV)
+  if ($inAlumni) { continue }
   if ($inPI) {
     if ($l -match '^\[IMG:([^|\]]+)\|') { $body += '<div class="card pi"><img class="ph" src="' + (ImgFile $Matches[1]) + '" alt="Lea Beilkin-Sirota"><div class="txt">' + (Get-Content (Join-Path $root 'data\team-pi.html') -Raw -Encoding UTF8) + '</div></div>' }
     continue

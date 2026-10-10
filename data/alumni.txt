@@ -1,0 +1,14 @@
+# Alumni, one per line (newest first). Links can be written as [name](url).
+Dr. Bertin Many Manda, Postdoctoral Fellow, 11/24-02/26.
+Lior Graham, Visiting Scholar, 2025.
+Dr. Y. R. Kartik Hegde, Visiting Scholar, 08-10/2023.
+Yehonatan (Johnny) Benisty, MSc, Mechanical Engineering, TAU.
+Asia Najjar, BSc final year project, Electrical Engineering, TAU.
+Bakaa Nijm, BSc final year project, Electrical Engineering, TAU.
+Gil Koresh, Undergraduate lab assistant, Mechanical Engineering, TAU.
+Or Lasri, MSc Direct track, Mechanical Engineering, TAU.
+Omri Dalin, MSc, Mechanical Engineering, TAU (co-advisor).
+Itai Dotan, BSc final year project, Electrical Engineering, TAU.
+Moran Idan, BSc final year project, Electrical Engineering, TAU.
+Nadav Malachi, BSc final year project, Electrical Engineering, TAU.
+Ido Bookstein, BSc final year project, Electrical Engineering, TAU.
