@@ -325,6 +325,11 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
   } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
   else { $body = Convert-Outline $lines $false }
   # no page titles: the highlighted menu item shows where you are
+  if ($p.src -eq 'contact') {
+    # lines starting with "- " become a bulleted list
+    $body = [regex]::Replace($body, '(?:<p>-\s*(.*?)</p>\s*)+', { param($m) '<ul class="dash">' + ((($m.Value | Select-String '<p>-\s*(.*?)</p>' -AllMatches).Matches | ForEach-Object { '<li>' + $_.Groups[1].Value + '</li>' }) -join '') + '</ul>' })
+    $body = '<div class="contact">' + $body + '</div>'
+  }
   Write-Page $p.file $p.file $p.title $body
 }
 

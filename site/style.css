@@ -139,3 +139,9 @@ main>:first-child{margin-top:.4em}
   .funders{gap:14px;margin-top:18px}
   .funders img{height:40px}
 }
+/* Contact: the open position description is justified (short address lines are unaffected) */
+.contact p{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.contact ul.dash{margin:.3em 0 .8em;padding-left:1.4em}.contact ul.dash li{margin:.2em 0}
+/* Team: justified text (short lines are unaffected) */
+.card .txt p,.cv dd,.alumni{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+@media (max-width:700px){.cv{grid-template-columns:1fr;gap:0}.cv dt{margin-top:.7em}.cv dt:first-child{margin-top:0}}
