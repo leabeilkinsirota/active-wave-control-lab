@@ -50,7 +50,7 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 .pfig .frow>*{flex:none;display:block;width:calc(var(--ar) * var(--h) * 100cqw);height:auto;margin:0}
 .pfig .frow>a>img{display:block;width:100%;height:auto;margin:0}.pfig:empty{display:none}
 /* Wix videos (autoplay, muted, loop) */
-.frow video{display:block;aspect-ratio:var(--ar);object-fit:contain}
+.frow video{display:block;aspect-ratio:var(--r,var(--ar));object-fit:contain}
 .figs video{display:block;max-width:100%;height:auto;max-height:230px}
 /* Picture captions */
 .pfig .frow>figure>img,.pfig .frow>figure>video,.pfig .frow>figure>a>img{display:block;width:100%;height:auto}
@@ -153,3 +153,7 @@ main>:first-child{margin-top:.4em}
 .pubs li{position:relative;padding-left:1.1em}
 .pubs li::before{content:"";position:absolute;left:.2em;top:.72em;width:5px;height:5px;border-radius:50%;background:#9a8f83}
 #earlier h3{margin-top:1em}
+/* Wider layout (980 -> 1180px) with slightly larger text (15 -> 16px); pictures scale with the width */
+:root{--w:1180px}
+body{font-size:16px}
+.intro{max-width:980px;margin:0 auto}   /* home intro + diagram keep a comfortable reading width */
