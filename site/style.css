@@ -46,6 +46,6 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 @media (max-width:760px){.pfig{float:none;width:100%;margin:0 0 12px}}
 /* Picture rows (laid out by build.ps1): --h = row height, --ar = picture aspect ratio, both relative to the column width */
 .pfig{container-type:inline-size;display:flex;flex-direction:column;gap:1.6cqw}
-.frow{display:flex;justify-content:center;gap:1.6cqw}
+.frow{display:flex;justify-content:center;align-items:center;gap:1.6cqw}
 .pfig .frow>*{flex:none;display:block;width:calc(var(--ar) * var(--h) * 100cqw);height:auto;margin:0}
 .pfig .frow>a>img{display:block;width:100%;height:auto;margin:0}.pfig:empty{display:none}
