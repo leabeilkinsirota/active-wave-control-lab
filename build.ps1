@@ -140,7 +140,7 @@ function Layout-Figs($figs, $textH, $split, $opt = @{}) {
   $html = ''
   for ($r = 0; $r -lt $best.rows.Count; $r++) {
     $html += '<div class="frow" style="--h:' + [Math]::Round($best.hs[$r], 4) + '">'
-    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(figure|a|img|video)', ('<$1 style="--ar:' + [Math]::Round($figs[$k].ar * $figs[$k].s, 3) + '"')) }
+    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(figure|a|img|video)', ('<$1 style="--ar:' + [Math]::Round($figs[$k].ar * $figs[$k].s, 3) + ';--r:' + $figs[$k].ar + '"')) }
     $html += '</div>'
   }
   $html
@@ -155,6 +155,7 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
               'c1fe2f_dff405ae5f1143858148b331df0b491e' = 0.8; 'c1fe2f_9aa51e66bc7d4934bea437dbc2cf242a' = 0.8; 'c1fe2f_8374e7cf995e470d9eca5cd6da6f516d' = 0.8   # quiet channel snapshots
               'c1fe2f_96a0a614fbb44338a2a4729af3fbfaff' = 0.8   # temporal negative refraction
               'c1fe2f_760c171f40c44ed0bca72aecd2d2e459' = 0.8   # wave acceleration and non-Hermitian jump
+              'c1fe2f_1d9fde2056a04133bba2beae7422ad7a' = 0.8   # Lab life: Fun Times group selfie
               'c1fe2f_34fcb9c11d0c4e63b975339c45b3a837' = 0.8   # harnessing nonlinearity
               'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
               'c1fe2f_7a6c9c38dd0646baa75666a175bfb216' = 0.8; 'c1fe2f_9729ad1c463e49a2809164e156faf488' = 0.8; 'c1fe2f_23857bc08e3a4b8ea54d55a3eb6ab771' = 0.8 }   # absorbers plots
@@ -377,7 +378,7 @@ foreach ($dl in (Get-Content (Join-Path $root 'data\lab-life.txt') -Encoding UTF
       $t = '<img src="' + (ImgFile $file) + '" alt="" loading="lazy">'
       if ($lnk) { $t = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $t + '</a>' }
       $ev.logos += $t
-    } else { [void]$ev.figs.Add(@{ tag = (FigTag $file $lnk); ar = [Math]::Max((ImgAR $file), 0.75); s = 1; id = $file }) }   # very tall phone photos are trimmed to 3:4
+    } else { $k0 = $file -replace '\.\w+$', ''; [void]$ev.figs.Add(@{ tag = (FigTag $file $lnk); ar = [Math]::Max((ImgAR $file), 0.75); s = $(if ($imgScale.ContainsKey($k0)) { $imgScale[$k0] } else { 1 }); id = $file }) }   # very tall phone photos are trimmed to 3:4
     continue
   }
   if ($dl -match '^rows\s+([\d\s]+)$') { $ev.split = @($Matches[1].Trim() -split '\s+' | ForEach-Object { [int]$_ }); continue }
