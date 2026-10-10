@@ -180,13 +180,6 @@ $venues = [ordered]@{
   'PhysRevLett.125.256802' = 'Physical Review Letters, 2020'; 'S0888327020308657' = 'Mechanical Systems and Signal Processing, 2021'
   'S0888327019300019' = 'Mechanical Systems and Signal Processing, 2019'; 'S0005109820300534' = 'Automatica, 2020'
 }
-# Rewritten short descriptions (data/research-texts.txt): "## <link piece>" blocks, blank line = new paragraph
-$descs = @{}; $dk = $null
-foreach ($dl in (Get-Content (Join-Path $root 'data\research-texts.txt') -Encoding UTF8)) {
-  if ($dl -match '^#\s') { continue }
-  if ($dl -match '^##\s+(.+)$') { $dk = $Matches[1].Trim(); $descs[$dk] = ''; continue }
-  if ($dk) { $descs[$dk] += $(if ($dl.Trim()) { $dl.Trim() + ' ' } else { "`n" }) }
-}
 # "Read more" at the end of the text -> its own line: "<i>Journal</i>, year - Read more"
 function Venue-Line($txt) {
   $m = [regex]::Match($txt, '\s*<a href="([^"]+)"[^>]*>Read more\.?</a>\.?')
@@ -194,7 +187,6 @@ function Venue-Line($txt) {
   $url = $m.Groups[1].Value
   $txt = $txt.Remove($m.Index, $m.Length) -replace '<p></p>', ''
   $v = ''; foreach ($k in $venues.Keys) { if ($url.Contains($k)) { $v = $venues[$k]; break } }
-  foreach ($k in $descs.Keys) { if ($url.Contains($k)) { $txt = (($descs[$k].Trim() -split "\s*`n\s*") | Where-Object { $_ } | ForEach-Object { '<p>' + (Esc $_.Trim()) + '</p>' }) -join '' } }
   if ($v -match '^(.*), (\d{4})$') { $v = '<i>' + (Esc $Matches[1]) + '</i>, ' + $Matches[2] + ' &ndash; ' } else { Write-Host "  no journal for $url" }
   $txt + '<p class="pref">' + $v + '<a href="' + $url + '" target="_blank" rel="noopener">Read more</a></p>'
 }
