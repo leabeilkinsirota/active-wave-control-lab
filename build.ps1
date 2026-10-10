@@ -108,8 +108,8 @@ function ImgAR($id) {
 function Layout-Figs($figs, $textH, $split, $opt = @{}) {
   $n = $figs.Count; if ($n -eq 0) { return '' }
   $g = 0.016; $h0 = 0.42; $maxPer = 3; $hcap = 99   # Lab life passes smaller rows, more per row and a height cap
-  $hmin = 0; $mcap = 0.55   # mcap: row height limit when there are several rows
-  if ($opt.h0) { $h0 = $opt.h0 }; if ($opt.maxPer) { $maxPer = $opt.maxPer }; if ($opt.hcap) { $hcap = $opt.hcap }; if ($opt.hmin) { $hmin = $opt.hmin }; if ($opt.mcap) { $mcap = $opt.mcap }
+  $hmin = 0; $mcap = 0.55; $wmin = 0   # mcap: row height limit when there are several rows; wmin: narrowest photo
+  if ($opt.h0) { $h0 = $opt.h0 }; if ($opt.maxPer) { $maxPer = $opt.maxPer }; if ($opt.hcap) { $hcap = $opt.hcap }; if ($opt.hmin) { $hmin = $opt.hmin }; if ($opt.mcap) { $mcap = $opt.mcap }; if ($opt.wmin) { $wmin = $opt.wmin }
   $best = $null; $bestCost = [double]::MaxValue
   for ($mask = 0; $mask -lt [Math]::Pow(2, $n - 1); $mask++) {
     $rows = @(); $cur = @()
@@ -124,6 +124,7 @@ function Layout-Figs($figs, $textH, $split, $opt = @{}) {
       if ($r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }
       $cost += $(if ($rh -lt $h0) { 1 } else { 0.3 }) * [Math]::Pow([Math]::Log($rh / $h0), 2)   # small pictures are worse than large ones
       if ($rh -lt $hmin) { $cost += 10 * [Math]::Pow([Math]::Log($rh / $hmin), 2) }   # optional floor on row height
+      if ($wmin) { foreach ($k in $rows[$r]) { $pw = $figs[$k].ar * [Math]::Min($rh, $mcap); if ($pw -lt $wmin) { $cost += 40 * [Math]::Pow([Math]::Log($pw / $wmin), 2) } } }   # optional floor on photo width
       if ($rows.Count -gt 1) { $rh = [Math]::Min($rh, $mcap) }; $rh = [Math]::Min($rh, $hcap)   # display cap: with several rows, no row dominates (a lone picture still fills the column)
       $hs += $rh; $prevH = $rh; $prevN = $rows[$r].Count
     }
@@ -133,7 +134,7 @@ function Layout-Figs($figs, $textH, $split, $opt = @{}) {
   }
   # rows of several pictures share one height (the smallest), so no group of pictures looks oversized next to another
   $multi = @(0..($best.rows.Count - 1) | Where-Object { $best.rows[$_].Count -gt 1 })
-  if ($multi.Count -gt 1) {
+  if ($multi.Count -gt 1 -and -not $opt.noEqual) {
     $hmin = ($multi | ForEach-Object { $best.hs[$_] } | Measure-Object -Minimum).Minimum
     foreach ($r in $multi) { $best.hs[$r] = $hmin }
   }
@@ -399,7 +400,7 @@ foreach ($ev in $evs) {
     # a lone photo gets more room than photos in a collage
     $hc = if ($ev.figs.Count -eq 1) { 0.6 } else { 0.55 }
     if ($ev.split) { $hc = 0.75 }   # rows set by hand: allow bigger photos
-    if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $ev.split @{ h0 = 0.42; hmin = 0.37; maxPer = 4; hcap = $hc; mcap = $(if ($ev.split) { 0.75 } else { 0.55 }) }) + '</div>' }
+    if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $ev.split @{ h0 = 0.42; hmin = 0.37; maxPer = 4; hcap = $hc; mcap = $(if ($ev.split) { 0.75 } else { 0.55 }); wmin = 0.33; noEqual = $true }) + '</div>' }
   }
   $tl += $ev.text + '</article>'
 }
