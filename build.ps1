@@ -124,7 +124,7 @@ function Layout-Figs($figs, $textH) {
 
 # Research page: one block per project, pictures floated right with the text wrapping around them
 # Pictures left out of the Research page
-$skipImgs = @('c1fe2f_db1d207bf4a44ffc8279938cd2e2d194')   # gravitational lensing: grid sketch
+$skipImgs = @('c1fe2f_affb91702dd140d6b065eaaa55480178')   # gravitational lensing: funnel potential
 function Convert-Projects($lines) {
   $o = New-Object Text.StringBuilder
   $title = $null; $txt = ''; $figs = New-Object Collections.ArrayList
