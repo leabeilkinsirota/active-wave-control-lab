@@ -70,18 +70,18 @@ photo c1fe2f_894e8ab70ed44be9a0382412763a597c.jpg | https://congress2023.metamor
 photo c1fe2f_1fffb58402b94ac49b29f3d8a7694931.jpg
 
 ## Group trip to the Sodom Salt Cave - May 2023
-rows 2 1
+rows 1 2
 photo c1fe2f_dde1fc8287ed4d81980503af470d887c.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 photo c1fe2f_cb1637009ff14849a35a048470d6364b.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 photo c1fe2f_fe9bdb6b68104b549fe79211da75ae48.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 
 ## The APS March Meeting in Las Vegas - March 2023
-photo c1fe2f_8f5540887c9b4064ab4a4e8f2fc05bc7.jpg | https://meetings.aps.org/Meeting/MAR23/Session/B42.4
+rows 1 2 1
 logo c1fe2f_2c8cd9cf3b1a4247b88ac4e2ea6883b3.png | https://meetings.aps.org/Meeting/MAR23
+photo c1fe2f_8f5540887c9b4064ab4a4e8f2fc05bc7.jpg | https://meetings.aps.org/Meeting/MAR23/Session/B42.4
 photo c1fe2f_d3a356d74d9942d8bf894ee296b573a1.jpg
-photo c1fe2f_9b6e9b8ed10a41d1a37a696a95b8effa.jpg
 photo c1fe2f_6c9a091884a84df9abc128c29890cafe.jpg
-
+photo c1fe2f_9b6e9b8ed10a41d1a37a696a95b8effa.jpg
 ## The YIMQCMT in Bhubaneswar - October 2022
 photo c1fe2f_f05d70753f064f68b2e8d5e22eda8fdf.jpg
 text [Young Investigators Meet on Quantum Condensed Matter Theory](https://sites.google.com/niser.ac.in/yimqcmt-2022/home?authuser=0)
