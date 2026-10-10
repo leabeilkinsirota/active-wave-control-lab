@@ -144,6 +144,7 @@ $skipImgs = @('c1fe2f_affb91702dd140d6b065eaaa55480178')   # gravitational lensi
 # Pictures shown smaller than their row height (unit-cell sketches etc.); the row is laid out at full size, then shrinks and is centred
 $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aaac52f40499d1f95780868e4ad' = 0.85   # Haldane unit cell, 3 controlled cells
               'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = 1.15   # quiet channel system sketch
+              'c1fe2f_dff405ae5f1143858148b331df0b491e' = 0.8; 'c1fe2f_9aa51e66bc7d4934bea437dbc2cf242a' = 0.8; 'c1fe2f_8374e7cf995e470d9eca5cd6da6f516d' = 0.8   # quiet channel snapshots
               'c1fe2f_96a0a614fbb44338a2a4729af3fbfaff' = 0.8   # temporal negative refraction
               'c1fe2f_34fcb9c11d0c4e63b975339c45b3a837' = 0.8   # harnessing nonlinearity
               'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
