@@ -45,11 +45,11 @@ photo c1fe2f_0b2892b0acc444468f3cea5943af8ca3.jpg | https://www.comcas.org/
 ## Symposium on Acoustic Metamaterials - Aegina - May 2024 | https://sam-2024.sciencesconf.org/
 logo c1fe2f_1ff23b5cf9a24712ac2b875e3cd4e64a.png | https://sam-2024.sciencesconf.org/
 
-## The APS March Meeting in Minneapolis - March 2024 | https://march.aps.org/
+## The APS March Meeting in Minneapolis - March 2024 | https://meetings.aps.org/Meeting/MAR24
 photo c1fe2f_44df33dde3aa4e4882aa1e3c106cf2a2.jpg | https://meetings.aps.org/Meeting/MAR24/Session/D03.6
 photo c1fe2f_ea3fe8005ff74b7184f70260746bb2c2.jpg | https://meetings.aps.org/Meeting/MAR24/Session/D03.11
-logo c1fe2f_2c8cd9cf3b1a4247b88ac4e2ea6883b3.png | https://march.aps.org/
-photo c1fe2f_867588faf39f49b88cc517e71231f593.jpg | https://march.aps.org/
+logo c1fe2f_2c8cd9cf3b1a4247b88ac4e2ea6883b3.png | https://meetings.aps.org/Meeting/MAR24
+photo c1fe2f_867588faf39f49b88cc517e71231f593.jpg | https://meetings.aps.org/Meeting/MAR24
 
 ## The HKUST Hong Kong - Nov./Dec. 2023
 photo c1fe2f_a66488dee958470cad0ae2c136e8afb9.jpg | https://hkust.edu.hk/
@@ -76,7 +76,7 @@ photo c1fe2f_fe9bdb6b68104b549fe79211da75ae48.jpg | https://banketgarim.co.il/ra
 
 ## The APS March Meeting in Las Vegas - March 2023
 photo c1fe2f_8f5540887c9b4064ab4a4e8f2fc05bc7.jpg | https://meetings.aps.org/Meeting/MAR23/Session/B42.4
-logo c1fe2f_2c8cd9cf3b1a4247b88ac4e2ea6883b3.png | https://march.aps.org/
+logo c1fe2f_2c8cd9cf3b1a4247b88ac4e2ea6883b3.png | https://meetings.aps.org/Meeting/MAR23
 photo c1fe2f_d3a356d74d9942d8bf894ee296b573a1.jpg
 photo c1fe2f_9b6e9b8ed10a41d1a37a696a95b8effa.jpg
 photo c1fe2f_6c9a091884a84df9abc128c29890cafe.jpg

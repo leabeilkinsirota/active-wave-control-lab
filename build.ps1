@@ -108,7 +108,8 @@ function ImgAR($id) {
 function Layout-Figs($figs, $textH, $split, $opt = @{}) {
   $n = $figs.Count; if ($n -eq 0) { return '' }
   $g = 0.016; $h0 = 0.42; $maxPer = 3; $hcap = 99   # Lab life passes smaller rows, more per row and a height cap
-  if ($opt.h0) { $h0 = $opt.h0 }; if ($opt.maxPer) { $maxPer = $opt.maxPer }; if ($opt.hcap) { $hcap = $opt.hcap }
+  $hmin = 0
+  if ($opt.h0) { $h0 = $opt.h0 }; if ($opt.maxPer) { $maxPer = $opt.maxPer }; if ($opt.hcap) { $hcap = $opt.hcap }; if ($opt.hmin) { $hmin = $opt.hmin }
   $best = $null; $bestCost = [double]::MaxValue
   for ($mask = 0; $mask -lt [Math]::Pow(2, $n - 1); $mask++) {
     $rows = @(); $cur = @()
@@ -122,6 +123,7 @@ function Layout-Figs($figs, $textH, $split, $opt = @{}) {
       $rh = (1 - $g * ($rows[$r].Count - 1)) / $sum
       if ($r -gt 0 -and $r -eq $rows.Count - 1 -and $rows[$r].Count -lt $prevN -and $rh -gt $prevH) { $rh = $prevH }
       $cost += $(if ($rh -lt $h0) { 1 } else { 0.3 }) * [Math]::Pow([Math]::Log($rh / $h0), 2)   # small pictures are worse than large ones
+      if ($rh -lt $hmin) { $cost += 10 * [Math]::Pow([Math]::Log($rh / $hmin), 2) }   # optional floor on row height
       if ($rows.Count -gt 1) { $rh = [Math]::Min($rh, 0.55) }; $rh = [Math]::Min($rh, $hcap)   # display cap: with several rows, no row dominates (a lone picture still fills the column)
       $hs += $rh; $prevH = $rh; $prevN = $rows[$r].Count
     }
@@ -292,8 +294,18 @@ $newsJs = '<script>var b=document.getElementById("showmore");if(b){var open=fals
 
 # ---------- write pages ----------
 New-Item -ItemType Directory -Force $site | Out-Null
+# Link clean-up on every page: old Wix URLs -> new pages, ADS abstracts -> official APS meeting pages,
+# preprint -> published article, personal session tokens removed
+function Fix-Links($html) {
+  $html = [regex]::Replace($html, 'href="https?://(www\.)?active-wave-control-lab\.com/?([\w-]*)"( target="_blank" rel="noopener")?', {
+    param($m) $p = $m.Groups[2].Value; if (-not $p) { $p = 'index' }; 'href="' + $p + '.html"' })
+  $html = [regex]::Replace($html, 'https://ui\.adsabs\.harvard\.edu/abs/(\d\d)(\d\d)APS\.\.MAR([A-Z])(\d\d)(\d{3})\w/abstract', {
+    param($m) 'https://meetings.aps.org/Meeting/MAR' + $m.Groups[2].Value + '/Session/' + $m.Groups[3].Value + $m.Groups[4].Value + '.' + [int]$m.Groups[5].Value })
+  $html = $html.Replace('https://arxiv.org/abs/2512.12726', 'https://www.nature.com/articles/s44455-025-00012-7')
+  [regex]::Replace($html, '\?casa_token=[^"&]*(&amp;)?', { param($m) if ($m.Groups[1].Success) { '?' } else { '' } })
+}
 function Write-Page($file, $active, $title, $body, $extra = '') {
-  [IO.File]::WriteAllText((Join-Path $site $file), (Chrome-Top $active $title) + $body + $footer.Replace('</body>', $extra + '</body>'), $enc)
+  [IO.File]::WriteAllText((Join-Path $site $file), (Fix-Links ((Chrome-Top $active $title) + $body + $footer.Replace('</body>', $extra + '</body>'))), $enc)
 }
 
 # Home
@@ -368,8 +380,8 @@ foreach ($ev in $evs) {
   } else {
     $tl += $logos
     # a lone photo gets more room than photos in a collage
-    $hc = if ($ev.figs.Count -eq 1) { 0.75 } else { 0.6 }
-    if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $ev.split @{ h0 = 0.33; maxPer = 4; hcap = $hc }) + '</div>' }
+    $hc = if ($ev.figs.Count -eq 1) { 0.6 } else { 0.55 }
+    if ($ev.figs.Count) { $tl += '<div class="efig">' + (Layout-Figs $ev.figs 10 $ev.split @{ h0 = 0.42; hmin = 0.37; maxPer = 4; hcap = $hc }) + '</div>' }
   }
   $tl += $ev.text + '</article>'
 }
