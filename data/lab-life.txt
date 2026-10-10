@@ -5,6 +5,11 @@
 #   text  some text, links as [label](url)
 #   rows  2 1   (optional: photos per row, here 2 then 1)
 
+## Forum Acusticum - Graz - September 2026 | https://forum-acusticum.org/fa2026/
+photo graz2026-gal-talk.jpg
+photo graz2026-asaf-talk.jpg
+photo graz2026-lea-talk.jpg
+
 ## METAMAT Conference - July 2026 | https://metamat2026.sciencesconf.org/
 photo c1fe2f_45fd6f34b1de43528a32064834287a18.jpg | https://metamat2026.sciencesconf.org/
 
@@ -18,6 +23,7 @@ photo c1fe2f_1d9fde2056a04133bba2beae7422ad7a.jpg
 photo c1fe2f_6f8b566efc3646b398ae7cae4a2c6a7a.jpg
 
 ## Team day - August 2025
+rows 1 1
 photo c1fe2f_9a3030b94e044f5a9311eb478cb3f958.jpg
 photo c1fe2f_0b1bbbe1d3f1416fa916a15e8ad1dff0.jpg
 
@@ -70,7 +76,7 @@ photo c1fe2f_894e8ab70ed44be9a0382412763a597c.jpg | https://congress2023.metamor
 photo c1fe2f_1fffb58402b94ac49b29f3d8a7694931.jpg
 
 ## Group trip to the Sodom Salt Cave - May 2023
-rows 1 2
+rows 1 1 1
 photo c1fe2f_dde1fc8287ed4d81980503af470d887c.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 photo c1fe2f_cb1637009ff14849a35a048470d6364b.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
 photo c1fe2f_fe9bdb6b68104b549fe79211da75ae48.jpg | https://banketgarim.co.il/rappelling-trip-to-sodom-salt-cave-israel/
