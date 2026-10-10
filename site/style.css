@@ -105,3 +105,6 @@ main>:first-child{margin-top:.4em}
 /* Footer: logo and school text are one link */
 .inst a{display:flex;gap:10px;align-items:center;color:inherit;text-decoration:none}
 .inst a:hover p{text-decoration:underline}
+/* Banner: show the whole picture (it is 4.2:1); on very wide screens it sits on black, which matches its background */
+.banner{width:100%;height:auto;aspect-ratio:2200/522;max-height:360px;background-size:contain}
+@media (max-width:700px){.banner{aspect-ratio:auto;height:200px;background-size:cover}}
