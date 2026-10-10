@@ -131,7 +131,7 @@ function Layout-Figs($figs, $textH) {
   $html = ''
   for ($r = 0; $r -lt $best.rows.Count; $r++) {
     $html += '<div class="frow" style="--h:' + [Math]::Round($best.hs[$r], 4) + '">'
-    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(a|img|video)', ('<$1 style="--ar:' + $figs[$k].ar + '"')) }
+    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(a|img|video)', ('<$1 style="--ar:' + [Math]::Round($figs[$k].ar * $figs[$k].s, 3) + '"')) }
     $html += '</div>'
   }
   $html
@@ -140,8 +140,8 @@ function Layout-Figs($figs, $textH) {
 # Research page: one block per project, pictures floated right with the text wrapping around them
 # Pictures left out of the Research page
 $skipImgs = @('c1fe2f_affb91702dd140d6b065eaaa55480178')   # gravitational lensing: funnel potential
-# Pictures shown smaller than their row height (unit-cell sketches etc.)
-$imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.75 }   # Haldane unit cell
+# Pictures shown smaller than their row height (unit-cell sketches etc.); the row is laid out at full size, then shrinks and is centred
+$imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aaac52f40499d1f95780868e4ad' = 0.85 }   # Haldane unit cell, 3 controlled cells
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Project titles missing on the Wix page: title inserted before the paragraph starting with the key
@@ -169,9 +169,9 @@ function Convert-Projects($lines) {
       $key = $id -replace '(~mv2.*|f000\.jpg)$', ''
       if ($key -in $skipImgs) { continue }
       $ar = ImgAR $id
-      if ($imgScale.ContainsKey($key)) { $ar = [Math]::Round($ar * $imgScale[$key], 3) }   # narrower box at the same row height = smaller picture
+      $s = if ($imgScale.ContainsKey($key)) { $imgScale[$key] } else { 1 }
       $tag = FigTag $id $lnk
-      [void]$figs.Add(@{ tag = $tag; ar = $ar; id = $key }); continue
+      [void]$figs.Add(@{ tag = $tag; ar = $ar; s = $s; id = $key }); continue
     }
     foreach ($k in $addTitles.Keys) { if ($l.StartsWith($k)) { & $emit; $title = Esc $addTitles[$k]; $txt = ''; $figs = New-Object Collections.ArrayList } }
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
