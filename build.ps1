@@ -249,10 +249,7 @@ function Chrome-Top($active, $pageTitle) {
   $nav = ''
   foreach ($m in $menu) {
     $cls = if ($m.f -eq $active) { ' class="on"' } else { '' }
-    if ($m.t -eq 'Research') {
-      $sub = ($topicTitles | ForEach-Object { '<a href="' + $_.f + '">' + (Esc $_.t) + '</a>' }) -join ''
-      $nav += '<div class="dd"><a' + $cls + ' href="' + $m.f + '">' + $m.t + '</a><div class="ddm">' + $sub + '</div></div>'
-    } else { $nav += '<a' + $cls + ' href="' + $m.f + '">' + $m.t + '</a>' }
+    $nav += '<a' + $cls + ' href="' + $m.f + '">' + $m.t + '</a>'
   }
   @"
 <!doctype html>
