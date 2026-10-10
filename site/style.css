@@ -49,3 +49,6 @@ footer hr{border:0;border-top:1px solid #333;width:280px;margin:0 auto 20px}
 .frow{display:flex;justify-content:center;align-items:center;gap:1.6cqw}
 .pfig .frow>*{flex:none;display:block;width:calc(var(--ar) * var(--h) * 100cqw);height:auto;margin:0}
 .pfig .frow>a>img{display:block;width:100%;height:auto;margin:0}.pfig:empty{display:none}
+/* Wix videos (autoplay, muted, loop) */
+.frow video{display:block;aspect-ratio:var(--ar);object-fit:contain}
+.figs video{display:block;max-width:100%;height:auto;max-height:230px}

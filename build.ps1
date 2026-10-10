@@ -7,6 +7,16 @@ $enc  = New-Object Text.UTF8Encoding($false)
 
 function Esc($s) { [Net.WebUtility]::HtmlEncode($s) }
 function ImgFile($id) { 'images/' + ($id -replace '~mv2', '') }
+# Picture tag; Wix videos appear in the scrape as their poster frame (<id>f000.jpg) and play from videos/<id>.mp4
+function FigTag($id, $lnk) {
+  $v = $id -replace 'f000\.jpg$', ''
+  if ($v -ne $id -and (Test-Path (Join-Path $site "videos/$v.mp4"))) {
+    return '<video src="videos/' + $v + '.mp4" poster="' + (ImgFile $id) + '" autoplay muted loop playsinline preload="metadata"></video>'
+  }
+  $tag = '<img src="' + (ImgFile $id) + '" alt="" loading="lazy">'
+  if ($lnk) { $tag = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
+  $tag
+}
 
 # inline text: [label](url) -> <a>, everything else escaped
 function Inline($s) {
@@ -56,9 +66,7 @@ function Convert-Outline($lines, $skipFirstTitle) {
     $l = $l.Trim()
     if (-not $l) { continue }
     if ($l -match '^\[?\[IMG:([^|\]]+)\|[^\]]*\]\]?(\(([^)]*)\))?$') {
-      $tag = '<img src="' + (ImgFile $Matches[1]) + '" alt="" loading="lazy">'
-      if ($Matches[3]) { $tag = '<a href="' + (Esc $Matches[3]) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
-      [void]$imgs.Add($tag); continue
+      [void]$imgs.Add((FigTag $Matches[1] $Matches[3])); continue
     }
     & $flush
     if (($l -in @('Positions', 'Sayan')) -or ($l.Length -le 2) -or (($l -match '^[\w.%()-]+$') -and ($l -match '[_0-9]') -and ($l -notmatch '\s'))) { continue }
@@ -123,7 +131,7 @@ function Layout-Figs($figs, $textH) {
   $html = ''
   for ($r = 0; $r -lt $best.rows.Count; $r++) {
     $html += '<div class="frow" style="--h:' + [Math]::Round($best.hs[$r], 4) + '">'
-    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(a|img)', ('<$1 style="--ar:' + $figs[$k].ar + '"')) }
+    foreach ($k in $best.rows[$r]) { $html += ($figs[$k].tag -replace '^<(a|img|video)', ('<$1 style="--ar:' + $figs[$k].ar + '"')) }
     $html += '</div>'
   }
   $html
@@ -162,8 +170,7 @@ function Convert-Projects($lines) {
       if ($key -in $skipImgs) { continue }
       $ar = ImgAR $id
       if ($imgScale.ContainsKey($key)) { $ar = [Math]::Round($ar * $imgScale[$key], 3) }   # narrower box at the same row height = smaller picture
-      $tag = '<img src="' + (ImgFile $id) + '" alt="" loading="lazy">'
-      if ($lnk) { $tag = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $tag + '</a>' }
+      $tag = FigTag $id $lnk
       [void]$figs.Add(@{ tag = $tag; ar = $ar; id = $key }); continue
     }
     foreach ($k in $addTitles.Keys) { if ($l.StartsWith($k)) { & $emit; $title = Esc $addTitles[$k]; $txt = ''; $figs = New-Object Collections.ArrayList } }
