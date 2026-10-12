@@ -4,6 +4,7 @@ $root = $PSScriptRoot
 $site = Join-Path $root 'site'
 $out  = Join-Path $root '_scrape\out'
 $enc  = New-Object Text.UTF8Encoding($false)
+$cssVer = (Get-FileHash (Join-Path $site 'style.css') -Algorithm MD5).Hash.Substring(0, 8)   # stylesheet version: browsers reload it after every change
 
 function Esc($s) { [Net.WebUtility]::HtmlEncode($s) }
 function ImgFile($id) { 'images/' + ($id -replace '~mv2', '') }
@@ -267,7 +268,7 @@ function Chrome-Top($active, $pageTitle) {
 <title>$(Esc $pageTitle) | Active Wave Control Lab</title>
 <meta name="description" content="Active Wave Control Lab, School of Mechanical Engineering, Tel Aviv University: active control of wave propagation in metamaterials and open acoustic environments.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"></head><body>
+<link rel="stylesheet" href="style.css?v=$cssVer"></head><body>
 <header class="banner"><h1>Active Wave Control Lab</h1></header>
 <nav class="menu">$nav</nav>
 <main>

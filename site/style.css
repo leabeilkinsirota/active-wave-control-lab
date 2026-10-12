@@ -92,9 +92,9 @@ main>:first-child{margin-top:.4em}
 .tl.packed .ev.l{left:0}.tl.packed .ev.r{right:0}
 .tl.packed .ev.l::before{left:auto;right:-44px}.tl.packed .ev.r::before{left:-44px}
 .ev .side{display:flex;gap:18px;align-items:center}
-.ev .side .efig{flex:0 0 50%}
-.ev .side .logos{flex:1 1 auto;flex-direction:column;align-items:center;justify-content:center;gap:32px;margin:0}
-.ev .side .logos a{display:block;width:85%;max-width:240px}
+.ev .side .efig{flex:0 0 48%}
+.ev .side .logos{flex:1 1 auto;flex-direction:column;align-items:center;justify-content:center;gap:40px;margin:0}
+.ev .side .logos a{display:block;width:92%}
 .ev .side .logos img{width:100%;height:auto}
 /* Timeline: a short line from the central line to each card instead of a dot */
 .ev::before{top:22px;left:-24px;width:24px;height:2px;border:0;border-radius:0;background:#b9afa4}
