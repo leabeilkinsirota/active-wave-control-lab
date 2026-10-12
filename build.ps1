@@ -162,6 +162,7 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
               'c1fe2f_9a3030b94e044f5a9311eb478cb3f958' = 0.75; 'c1fe2f_0b1bbbe1d3f1416fa916a15e8ad1dff0' = 0.75   # Lab life: Team day
               'c1fe2f_dde1fc8287ed4d81980503af470d887c' = 0.75; 'c1fe2f_cb1637009ff14849a35a048470d6364b' = 0.75; 'c1fe2f_fe9bdb6b68104b549fe79211da75ae48' = 0.75   # Lab life: Sodom cave
               'c1fe2f_34fcb9c11d0c4e63b975339c45b3a837' = 0.8   # harnessing nonlinearity
+              'c1fe2f_09ecb430a9e045bdbc92bd943f25c0ad' = 0.8; 'c1fe2f_afff75f980c0419cbd492035db2c3f09' = 0.8; 'c1fe2f_16907c31fc41423fb82cf56f350bca64' = 0.8; 'c1fe2f_2dc04382aca74ea1910241691cdfdb24' = 0.8   # controlled wave acceleration: gamma panels
               'c1fe2f_720f9d42937146d4b853ea93e9587a09' = 0.93; 'c1fe2f_279b2987753c49cea3eacb46b4d0a033' = 1.08   # Lab life Siena: Colosseum smaller, restaurant bigger
               'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
               'c1fe2f_7a6c9c38dd0646baa75666a175bfb216' = 0.8; 'c1fe2f_9729ad1c463e49a2809164e156faf488' = 0.8; 'c1fe2f_23857bc08e3a4b8ea54d55a3eb6ab771' = 0.8 }   # absorbers plots
