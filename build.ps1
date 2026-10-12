@@ -157,7 +157,6 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
               'c1fe2f_96a0a614fbb44338a2a4729af3fbfaff' = 0.8   # temporal negative refraction
               'c1fe2f_760c171f40c44ed0bca72aecd2d2e459' = 0.8   # wave acceleration and non-Hermitian jump
               'c1fe2f_1d9fde2056a04133bba2beae7422ad7a' = 0.8   # Lab life: Fun Times group selfie
-              'graz2026-dinner-happy' = 0.75   # Lab life: Graz dinner
               'c1fe2f_77f2568a29d24293b3ebcceab43e4c4a' = 0.8; 'c1fe2f_2018e1edeb474978bd2f4758fbe22417' = 0.8   # temporal cloaking figures
               'c1fe2f_9a3030b94e044f5a9311eb478cb3f958' = 0.75; 'c1fe2f_0b1bbbe1d3f1416fa916a15e8ad1dff0' = 0.75   # Lab life: Team day
               'c1fe2f_dde1fc8287ed4d81980503af470d887c' = 0.75; 'c1fe2f_cb1637009ff14849a35a048470d6364b' = 0.75; 'c1fe2f_fe9bdb6b68104b549fe79211da75ae48' = 0.75   # Lab life: Sodom cave

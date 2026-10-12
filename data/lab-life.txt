@@ -6,14 +6,16 @@
 #   rows  2 1   (optional: photos per row, here 2 then 1)
 
 ## Forum Acusticum - Graz - September 2026 | https://forum-acusticum.org/fa2026/
-rows 1 2 1
+rows 1 2 2
 photo graz2026-gal-talk2.jpg | https://forum-acusticum.org/fa2026/
 photo graz2026-asaf-talk.jpg | https://forum-acusticum.org/fa2026/
 photo graz2026-lea-talk.jpg | https://forum-acusticum.org/fa2026/
 photo graz2026-dinner-happy.jpg
+photo graz2026-selfie.jpg
 
 ## METAMAT Conference - July 2026 | https://metamat2026.sciencesconf.org/
 photo c1fe2f_45fd6f34b1de43528a32064834287a18.jpg | https://metamat2026.sciencesconf.org/
+photo metamat2026-boat-sayan.jpg
 
 ## Gal's Final Year Project: Wave Trapping - July 2026
 photo c1fe2f_43a2693fe0404789aa40a579569d41bb.jpg
