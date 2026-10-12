@@ -170,6 +170,8 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
 $rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet channel: system on top, 3 snapshots below
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
+# Paragraphs (by their first words) joined to the previous one: Wix split them around a picture
+$joinParas = @('We show that the resulting dynamics')   # temporal negative refraction
 # Project titles missing on the Wix page: title inserted before the paragraph starting with the key
 $addTitles = @{ 'We realized active autonomous guiding of topological sound beams' = 'Real-time steering of curved sound beams in a feedback-based topological acoustic metamaterial' }
 # Project titles as in the papers (from Crossref); {PT} = calligraphic PT
@@ -246,7 +248,7 @@ function Convert-Projects($lines) {
     # short lines inside a project are picture captions (e.g. "M<0, K=0."), not text
     if ($plain.Length -le 60 -and $title) { [void]$caps.Add((Inline ($l -replace '\.$', ''))); continue }
     # Wix split some paragraphs mid-sentence around the pictures: a piece starting in lowercase continues the previous one
-    if ($l -cmatch '^[a-z]' -and $txt.EndsWith('</p>')) { $txt = $txt.Substring(0, $txt.Length - 4) + ' ' + (Inline $l) + '</p>' }
+    if (($l -cmatch '^[a-z]' -or @($joinParas | Where-Object { $l.StartsWith($_) }).Count) -and $txt.EndsWith('</p>')) { $txt = $txt.Substring(0, $txt.Length - 4) + ' ' + (Inline $l) + '</p>' }
     else { $txt += '<p>' + (Inline $l) + '</p>' }
   }
   & $emit
