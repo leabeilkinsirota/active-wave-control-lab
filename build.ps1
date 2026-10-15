@@ -166,11 +166,9 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
               'c1fe2f_09ecb430a9e045bdbc92bd943f25c0ad' = 0.8; 'c1fe2f_afff75f980c0419cbd492035db2c3f09' = 0.8; 'c1fe2f_16907c31fc41423fb82cf56f350bca64' = 0.8; 'c1fe2f_2dc04382aca74ea1910241691cdfdb24' = 0.8   # controlled wave acceleration: gamma panels
               'c1fe2f_720f9d42937146d4b853ea93e9587a09' = 0.93; 'c1fe2f_279b2987753c49cea3eacb46b4d0a033' = 1.08   # Lab life Siena: Colosseum smaller, restaurant bigger
               'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
-              'shell-illusion-sketch.png' = 1.13; 'shell-illusion-snapshots.jpg' = 1.47; 'tdpo-sketch.png' = 1.26; 'tdpo-sphere-snapshots.jpg' = 1.26   # preprints: each picture fills the column width
               'c1fe2f_7a6c9c38dd0646baa75666a175bfb216' = 0.8; 'c1fe2f_9729ad1c463e49a2809164e156faf488' = 0.8; 'c1fe2f_23857bc08e3a4b8ea54d55a3eb6ab771' = 0.8 }   # absorbers plots
 # Fixed row split for a project (key = its first picture): number of pictures per row
-$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3)   # quiet channel: system on top, 3 snapshots below
-              'shell-illusion-sketch.png' = @(1, 1); 'tdpo-sketch.png' = @(1, 1) }   # preprints: sketch above the field snapshots
+$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet channel: system on top, 3 snapshots below
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Paragraphs (by their first words) joined to the previous one: Wix split them around a picture
