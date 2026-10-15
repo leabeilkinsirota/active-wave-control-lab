@@ -166,9 +166,11 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
               'c1fe2f_09ecb430a9e045bdbc92bd943f25c0ad' = 0.8; 'c1fe2f_afff75f980c0419cbd492035db2c3f09' = 0.8; 'c1fe2f_16907c31fc41423fb82cf56f350bca64' = 0.8; 'c1fe2f_2dc04382aca74ea1910241691cdfdb24' = 0.8   # controlled wave acceleration: gamma panels
               'c1fe2f_720f9d42937146d4b853ea93e9587a09' = 0.93; 'c1fe2f_279b2987753c49cea3eacb46b4d0a033' = 1.08   # Lab life Siena: Colosseum smaller, restaurant bigger
               'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
+              'shell-illusion-sketch.png' = 1.13; 'shell-illusion-snapshots.jpg' = 1.47; 'tdpo-sketch.png' = 1.26; 'tdpo-sphere-snapshots.jpg' = 1.26   # preprints: each picture fills the column width
               'c1fe2f_7a6c9c38dd0646baa75666a175bfb216' = 0.8; 'c1fe2f_9729ad1c463e49a2809164e156faf488' = 0.8; 'c1fe2f_23857bc08e3a4b8ea54d55a3eb6ab771' = 0.8 }   # absorbers plots
 # Fixed row split for a project (key = its first picture): number of pictures per row
-$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet channel: system on top, 3 snapshots below
+$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3)   # quiet channel: system on top, 3 snapshots below
+              'shell-illusion-sketch.png' = @(1, 1); 'tdpo-sketch.png' = @(1, 1) }   # preprints: sketch above the field snapshots
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Paragraphs (by their first words) joined to the previous one: Wix split them around a picture
@@ -191,6 +193,7 @@ $paperTitles = @{
 function Paper-Title($t) { (Esc $t).Replace('{PT}', '&#x1D4AB;&#x1D4AF;') }
 # Journal and year of each project's paper, keyed by a piece of its "Read more" link
 $venues = [ordered]@{
+  'acoustic_illusion_preprint' = 'arXiv preprint, 2026'; '2610.15823' = 'arXiv preprint, 2026'
   'gsp7-v4v1' = 'Physical Review Applied, 2026'; 's44455-025-00012-7' = 'npj Metamaterials, 2026'
   'zs92-qr17' = 'Physical Review Applied, 2025'; 'zkxs-24kn' = 'Physical Review Applied, 2025'
   'PhysRevB.111.174304' = 'Physical Review B, 2025'; 'PhysRevB.111.L100301' = 'Physical Review B, 2025'
@@ -218,6 +221,8 @@ function Convert-Projects($lines) {
       # captions belong to the pictures in order; shown under each picture
       for ($k = 0; $k -lt [Math]::Min($caps.Count, $figs.Count); $k++) { $figs[$k].tag = '<figure>' + $figs[$k].tag + '<figcaption>' + $caps[$k] + '</figcaption></figure>' }
       if ($caps.Count) { Write-Host ("  captions in '{0}': {1}" -f $title.Substring(0, [Math]::Min(30, $title.Length)), ($caps -join ' | ')) }
+      # each project's text is one paragraph
+      $txt = $txt.Replace('</p><p>', ' ')
       # rough text height in units of the picture column width (text beside the pictures: ~62 chars per 24px line)
       $plainTxt = [regex]::Replace($txt, '<[^>]+>', '')
       $npar = ([regex]::Matches($txt, '<p>')).Count
@@ -345,7 +350,11 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
       $body += '<p class="morebtn"><button type="button" id="earlierbtn">Show earlier publications</button></p>'
       $body += '<div id="earlier" hidden><ul class="pubs">' + (($earlier | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul></div>'
     }
-  } elseif ($p.src -eq 'research') { $body = Convert-Projects $lines }
+  } elseif ($p.src -eq 'research') {
+    # projects added after the Wix scrape (data/research-new.txt) come first
+    $new = Get-Content (Join-Path $root 'data\research-new.txt') -Encoding UTF8 | Where-Object { $_ -notmatch '^#\s' }
+    $body = Convert-Projects (@($new) + @($lines))
+  }
   else { $body = Convert-Outline $lines $false }
   # no page titles: the highlighted menu item shows where you are
   if ($p.src -eq 'contact') {
