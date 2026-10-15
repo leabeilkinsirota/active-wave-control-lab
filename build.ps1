@@ -300,11 +300,11 @@ $i = 0
 foreach ($n in $news) {
   $i++
   $txt = if ($n.link) { '<a href="' + (Esc $n.link) + '" target="_blank" rel="noopener">' + (Esc $n.text) + '</a>' } else { Esc $n.text }
-  $hide = if ($i -gt 4) { ' class="more" hidden' } else { '' }
+  $hide = if ($i -gt 5) { ' class="more" hidden' } else { '' }
   $newsHtml += "<li$hide><span class=""d"">$(Esc $n.date)</span><span>$txt</span></li>"
 }
 $newsHtml += '</ul>'
-if (@($news).Count -gt 4) { $newsHtml += '<p class="morebtn"><button type="button" id="showmore">Show more news</button></p>' }
+if (@($news).Count -gt 5) { $newsHtml += '<p class="morebtn"><button type="button" id="showmore">Show more news</button></p>' }
 $newsJs = '<script>var b=document.getElementById("showmore");if(b){var open=false;b.addEventListener("click",function(){open=!open;document.querySelectorAll("li.more").forEach(function(e){e.hidden=!open});b.textContent=open?"Show less news":"Show more news";});}</script>'
 
 # ---------- write pages ----------
