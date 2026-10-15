@@ -5,6 +5,9 @@
 #   text  some text, links as [label](url)
 #   rows  2 1   (optional: photos per row, here 2 then 1)
 
+## 14th TAU Underwater Acoustics Symposium - October 2026 | https://boag.sites.tau.ac.il/copy-of-acoustics-symposium
+photo tau-uas2026-asaf-talk.jpg | https://boag.sites.tau.ac.il/copy-of-acoustics-symposium
+
 ## Forum Acusticum - Graz - September 2026 | https://forum-acusticum.org/fa2026/
 rows 1 2 2
 photo graz2026-gal-talk2.jpg | https://forum-acusticum.org/fa2026/
