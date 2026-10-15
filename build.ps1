@@ -398,6 +398,7 @@ foreach ($dl in (Get-Content (Join-Path $root 'data\lab-life.txt') -Encoding UTF
   if ($dl -match '^##\s+(.*?)(\s+\|\s+(\S+))?$') { $ev = @{ title = $Matches[1]; link = $Matches[3]; logos = @(); figs = New-Object Collections.ArrayList; text = ''; split = $null }; [void]$evs.Add($ev); continue }
   if ($dl -match '^(photo|logo)\s+(\S+)(\s+\|\s+(\S+))?$') {
     $kind = $Matches[1]; $file = $Matches[2]; $lnk = $Matches[4]
+    if ($kind -eq 'photo' -and -not $lnk) { $lnk = $ev.link }   # photos lead to the event's link unless they have their own
     if ($kind -eq 'logo') {
       $t = '<img src="' + (ImgFile $file) + '" alt="" loading="lazy">'
       if ($lnk) { $t = '<a href="' + (Esc $lnk) + '" target="_blank" rel="noopener">' + $t + '</a>' }
