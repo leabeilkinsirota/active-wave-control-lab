@@ -7,7 +7,7 @@ $l = New-Object Net.HttpListener; $l.Prefixes.Add("http://localhost:$Port/"); $l
 $pool = [RunspaceFactory]::CreateRunspacePool(1, 16); $pool.Open()
 $serve = {
   param($c, $root)
-  $mime = @{ '.html'='text/html; charset=utf-8'; '.css'='text/css'; '.js'='application/javascript'; '.png'='image/png'; '.jpg'='image/jpeg'; '.jpeg'='image/jpeg'; '.svg'='image/svg+xml'; '.mp4'='video/mp4' }
+  $mime = @{ '.html'='text/html; charset=utf-8'; '.css'='text/css'; '.js'='application/javascript'; '.png'='image/png'; '.jpg'='image/jpeg'; '.jpeg'='image/jpeg'; '.svg'='image/svg+xml'; '.mp4'='video/mp4'; '.pdf'='application/pdf' }
   try {
     $p = [Uri]::UnescapeDataString($c.Request.Url.AbsolutePath.TrimStart('/')); if (-not $p) { $p = 'index.html' }
     $f = Join-Path $root $p

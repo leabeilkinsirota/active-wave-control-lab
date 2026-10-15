@@ -39,6 +39,7 @@ function Pub-Item($s) {
   if ($s -notmatch '^\[(.*)\]\(([^)]*)\)$') { return (Inline $s) }
   $label = $Matches[1]; $u = $Matches[2]
   if ($label -match '^(?<pre>.*?\(\d{4}[^)]*\)\.\s+.*?\.\s+In\s+)(?<j>.+?)(?<post>\s+\((?:Vol\.|pp\.).*)$' -or
+      $label -match '^(?<pre>.*?\(\d{4}[^)]*\)\.\s+.*?\.\s+)(?<j>arXiv preprint)(?<post>.*)$' -or
       $label -match '^(?<pre>.*?\(\d{4}[^)]*\)\.\s+.*?\.\s+)(?<j>[^,]+?)(?<post>,\s*\d.*)$') {
     $html = (Esc $Matches['pre']) + '<b>' + (Esc $Matches['j']) + '</b>' + (Esc $Matches['post'])
   } else { Write-Host "  publication without journal: $label"; $html = Esc $label }
