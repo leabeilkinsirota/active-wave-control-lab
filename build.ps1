@@ -370,10 +370,11 @@ $lines = Read-Outline 'people'
 $extra = Get-Content (Join-Path $root 'data\team-visiting.txt') -Encoding UTF8 | Where-Object { $_ -notmatch '^#\s' }
 $at = [Array]::FindIndex([string[]]$lines, [Predicate[string]]{ param($x) $x -match '^\{S:\d+\}Students' })
 if ($at -ge 0) { $lines = @($lines[0..($at - 1)]) + @($extra) + @($lines[$at..($lines.Count - 1)]) }
-# students added after the scrape (data/team-students.txt) come first under Students
+# students added after the scrape (data/team-students.txt) go right after Asaf's card (before the next picture)
 $extra = Get-Content (Join-Path $root 'data\team-students.txt') -Encoding UTF8 | Where-Object { $_ -notmatch '^#\s' }
-$at = [Array]::FindIndex([string[]]$lines, [Predicate[string]]{ param($x) $x -match '^\{S:\d+\}Students' })
-if ($at -ge 0) { $lines = @($lines[0..$at]) + @($extra) + @($lines[($at + 1)..($lines.Count - 1)]) }
+$at = [Array]::FindIndex([string[]]$lines, [Predicate[string]]{ param($x) $x -match '\}Asaf Kor$' })
+if ($at -ge 0) { $at = [Array]::FindIndex([string[]]$lines, $at, [Predicate[string]]{ param($x) $x -match '^\[IMG:|^\{S:\d+\}Alumni' }) }
+if ($at -ge 0) { $lines = @($lines[0..($at - 1)]) + @($extra) + @($lines[$at..($lines.Count - 1)]) }
 $body = ''
 $card = $null; $inPI = $false; $inAlumni = $false
 $flushCard = { if ($script:card) { $script:body += '<div class="card">' + $script:card + '</div></div>'; $script:card = $null } }
