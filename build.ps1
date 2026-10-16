@@ -171,6 +171,8 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
 # Fixed row split for a project (key = its first picture): number of pictures per row
 $rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3)   # quiet channel: system on top, 3 snapshots below
               'tunneling-theory.png' = @(1, 1) }   # acoustic tunneling: theory above the lab photo
+# Space between picture rows for a project (key = its first picture); default is the stylesheet's
+$rowGap = @{ 'tunneling-theory.png' = '6px' }
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Paragraphs (by their first words) joined to the previous one: Wix split them around a picture
@@ -230,7 +232,7 @@ function Convert-Projects($lines) {
       $txt = Venue-Line $txt
       $textH = (($plainTxt.Length / 62) * 24 + $npar * 10) / 455
       $figs = @($figs | Where-Object { $_.id -notin $moveLast }) + @($figs | Where-Object { $_.id -in $moveLast })
-      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="pfig">' + (Layout-Figs $figs $textH $(if ($figs.Count) { $rowSplit[$figs[0].id] })) + '</div><div class="ptxt">' + $txt + '</div></section>')
+      [void]$o.AppendLine('<section class="proj"><h3>' + $title + '</h3><div class="pfig"' + $(if ($figs.Count -and $rowGap[$figs[0].id]) { ' style="gap:' + $rowGap[$figs[0].id] + '"' }) + '>' + (Layout-Figs $figs $textH $(if ($figs.Count) { $rowSplit[$figs[0].id] })) + '</div><div class="ptxt">' + $txt + '</div></section>')
     }
   }
   foreach ($l in $lines) {
