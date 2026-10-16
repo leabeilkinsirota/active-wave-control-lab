@@ -1,0 +1,4 @@
+# Students added after the Wix scrape, shown first under "Students" (per person: picture, name, text lines)
+[IMG:c1fe2f_ee328f83b7504f968d5c5b46795b6b93~mv2.jpg|Lior.jpg]
+{S:34}Lior Graham
+PhD student (industry), Mechanical Engineering, TAU
