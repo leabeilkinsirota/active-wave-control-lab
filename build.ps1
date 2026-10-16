@@ -366,13 +366,17 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
 
 # Team: sections, with photo cards
 $lines = Read-Outline 'people'
+# groups added after the Wix scrape (data/team-visiting.txt) go before Students
+$extra = Get-Content (Join-Path $root 'data\team-visiting.txt') -Encoding UTF8 | Where-Object { $_ -notmatch '^#\s' }
+$at = [Array]::FindIndex([string[]]$lines, [Predicate[string]]{ param($x) $x -match '^\{S:\d+\}Students' })
+if ($at -ge 0) { $lines = @($lines[0..($at - 1)]) + @($extra) + @($lines[$at..($lines.Count - 1)]) }
 $body = ''
 $card = $null; $inPI = $false; $inAlumni = $false
 $flushCard = { if ($script:card) { $script:body += '<div class="card">' + $script:card + '</div></div>'; $script:card = $null } }
 foreach ($l in $lines) {
   $size = 16; if ($l -match '^\{S:(\d+)\}(.*)$') { $size = [int]$Matches[1]; $l = $Matches[2] }
   $l = $l.Trim(); if (-not $l -or $l -eq 'Sayan') { continue }
-  if ($l -match '^(Principal Investigator|Research Scientists|Postdoctoral Fellows|Students|Alumni)') { & $flushCard; $body += '<h3>' + (Inline $l) + '</h3>'; $inPI = $l -like 'Principal Investigator*'; $inAlumni = $l -like 'Alumni*'
+  if ($l -match '^(Principal Investigator|Research Scientists|Postdoctoral Fellows|Visiting Researcher|Students|Alumni)') { & $flushCard; $body += '<h3>' + (Inline $l) + '</h3>'; $inPI = $l -like 'Principal Investigator*'; $inAlumni = $l -like 'Alumni*'
     # alumni come from data/alumni.txt (one per line)
     if ($inAlumni) { $body += ((Get-Content (Join-Path $root 'data\alumni.txt') -Encoding UTF8 | Where-Object { $_.Trim() -and $_ -notmatch '^#' } | ForEach-Object { '<p class="alumni">' + (Inline $_.Trim()) + '</p>' }) -join '') }
     continue }
