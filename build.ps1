@@ -168,7 +168,8 @@ $imgScale = @{ 'c1fe2f_0f7ba6f18c864b8883195429b988346d' = 0.63; 'c1fe2f_77610aa
               'c1fe2f_e4c0fb65dfc64000a7777483dc8cbd9c' = 0.8; 'c1fe2f_9522254608714fbcab2ee1230266b2ed' = 0.8; 'c1fe2f_7b5946e9c1a84a37b49208d4c9048806' = 0.8   # reconfigurable metamaterials videos
               'c1fe2f_7a6c9c38dd0646baa75666a175bfb216' = 0.8; 'c1fe2f_9729ad1c463e49a2809164e156faf488' = 0.8; 'c1fe2f_23857bc08e3a4b8ea54d55a3eb6ab771' = 0.8 }   # absorbers plots
 # Fixed row split for a project (key = its first picture): number of pictures per row
-$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3) }   # quiet channel: system on top, 3 snapshots below
+$rowSplit = @{ 'c1fe2f_cbb4c1fbb74d41ea8eb433c65b4ee650' = @(1, 3)   # quiet channel: system on top, 3 snapshots below
+              'tunneling-theory.png' = @(1, 3) }   # acoustic tunneling: theory on top, 3 lab photos below
 # Pictures moved to the end of their project (own row below the others)
 $moveLast = @('c1fe2f_d3b19acc8c4c433b916e56274a27ab48')   # topological lattice animation
 # Paragraphs (by their first words) joined to the previous one: Wix split them around a picture
@@ -192,6 +193,7 @@ function Paper-Title($t) { (Esc $t).Replace('{PT}', '&#x1D4AB;&#x1D4AF;') }
 # Journal and year of each project's paper, keyed by a piece of its "Read more" link
 $venues = [ordered]@{
   '2610.21649' = 'arXiv preprint, 2026'; '2610.15823' = 'arXiv preprint, 2026'
+  'jasa/article/158/6/4900' = 'The Journal of the Acoustical Society of America, 2025'
   'gsp7-v4v1' = 'Physical Review Applied, 2026'; 's44455-025-00012-7' = 'npj Metamaterials, 2026'
   'zs92-qr17' = 'Physical Review Applied, 2025'; 'zkxs-24kn' = 'Physical Review Applied, 2025'
   'PhysRevB.111.174304' = 'Physical Review B, 2025'; 'PhysRevB.111.L100301' = 'Physical Review B, 2025'
@@ -349,9 +351,21 @@ foreach ($p in $pages | Where-Object { $_.src -in 'research', 'publications', 'c
       $body += '<div id="earlier" hidden><ul class="pubs">' + (($earlier | ForEach-Object { '<li>' + (Pub-Item $_.Trim()) + '</li>' }) -join '') + '</ul></div>'
     }
   } elseif ($p.src -eq 'research') {
-    # projects added after the Wix scrape (data/research-new.txt) come first
+    # projects added after the Wix scrape (data/research-new.txt) come first, or before the scraped project named by "@before <title start>"
     $new = Get-Content (Join-Path $root 'data\research-new.txt') -Encoding UTF8 | Where-Object { $_ -notmatch '^#\s' }
-    $body = Convert-Projects (@($new) + @($lines))
+    $top = @(); $blocks = @(); $cur = $null
+    foreach ($x in $new) {
+      if ($x -match '^\{S:\d+\}') { $cur = @{ before = $null; lines = New-Object Collections.ArrayList }; $blocks += $cur }
+      if ($x -match '^@before\s+(.+)$') { $cur.before = $Matches[1].Trim(); continue }
+      if ($cur) { [void]$cur.lines.Add($x) } else { $top += $x }
+    }
+    $lines = @($lines)
+    foreach ($b in $blocks | Where-Object { $_.before }) {
+      $k = $b.before; $at = [Array]::FindIndex([string[]]$lines, [Predicate[string]]{ param($x) $x -match '^\{S:\d+\}' -and ($x -replace '^\{S:\d+\}', '').StartsWith($k) })
+      if ($at -lt 0) { Write-Host "  @before not found: $k"; $top += $b.lines } else { $lines = @($lines[0..($at - 1)]) + @($b.lines) + @($lines[$at..($lines.Count - 1)]) }
+    }
+    foreach ($b in $blocks | Where-Object { -not $_.before }) { $top += $b.lines }
+    $body = Convert-Projects (@($top) + @($lines))
   }
   else { $body = Convert-Outline $lines $false }
   # no page titles: the highlighted menu item shows where you are
