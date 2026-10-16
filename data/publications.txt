@@ -1,8 +1,7 @@
 # Publications, newest first. One entry per line: [citation](link). The journal or proceedings name is set in bold automatically.
 # Entries after the "## Earlier publications" line are shown behind a "Show earlier publications" button.
-# Shell holography preprint: arXiv ID pending -> when posted, replace "(arXiv ID pending)" with "arXiv:XXXX.XXXXX" and the link with https://arxiv.org/abs/XXXX.XXXXX
 
-[Kor, A., & Beilkin-Sirota, L. (2026). Acoustic illusion of a rigid object for a moving emitter via equivalent surface control. arXiv preprint (arXiv ID pending).](papers/Kor_Beilkin-Sirota_2026_acoustic_illusion_preprint.pdf)
+[Kor, A., & Beilkin-Sirota, L. (2026). Acoustic illusion of a rigid object for a moving emitter via equivalent surface control. arXiv preprint arXiv:2610.21649.](https://arxiv.org/abs/2610.21649)
 [Kor, A., Ben Yelid, G., Boag, A., & Beilkin-Sirota, L. (2026). Acoustic scattered field calculation for a moving source using time-dependent physical optics. arXiv preprint arXiv:2610.15823.](https://arxiv.org/abs/2610.15823)
 [Jana, S., Manda, B. M., Achilleos, V., Frantzeskakis, D. J., & Sirota, L. (2026). Solution of wave acceleration and non-Hermitian jump in nonreciprocal lattices. Physical Review Applied, 26(2), 024076.](https://journals.aps.org/prapplied/abstract/10.1103/gsp7-v4v1)
 [Jana, S., & Sirota, L. (2026). Fast wave transport in two-dimensional PT-symmetric lattices. npj Metamaterials, 2(1), 4.](https://arxiv.org/abs/2512.12726)

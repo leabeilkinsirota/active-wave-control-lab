@@ -191,7 +191,7 @@ $paperTitles = @{
 function Paper-Title($t) { (Esc $t).Replace('{PT}', '&#x1D4AB;&#x1D4AF;') }
 # Journal and year of each project's paper, keyed by a piece of its "Read more" link
 $venues = [ordered]@{
-  'acoustic_illusion_preprint' = 'arXiv preprint, 2026'; '2610.15823' = 'arXiv preprint, 2026'
+  '2610.21649' = 'arXiv preprint, 2026'; '2610.15823' = 'arXiv preprint, 2026'
   'gsp7-v4v1' = 'Physical Review Applied, 2026'; 's44455-025-00012-7' = 'npj Metamaterials, 2026'
   'zs92-qr17' = 'Physical Review Applied, 2025'; 'zkxs-24kn' = 'Physical Review Applied, 2025'
   'PhysRevB.111.174304' = 'Physical Review B, 2025'; 'PhysRevB.111.L100301' = 'Physical Review B, 2025'
