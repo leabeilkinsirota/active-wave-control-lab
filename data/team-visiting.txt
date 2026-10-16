@@ -1,5 +1,5 @@
 # Team group inserted before "Students" (same outline syntax as the scrape: heading, then per person a picture, the name and text lines)
-{S:34}Visiting Researcher (industry)
+{S:34}Visiting Researchers (industry)
 [IMG:c1fe2f_1c0bc91dab98490ab11511487245d99f~mv2.png|gustavo_photo_trim.png]
 {S:34}Dr. Gustavo Aizenberg
 PhD: Electronics Engineering, University of Johannesburg, South Africa
